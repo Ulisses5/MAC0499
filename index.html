@@ -5,9 +5,10 @@
     https://github.com/mavroudisv/plain-academic
 -->
 
-<html lang="en">
+<html lang="pt-br">
+
 <head>
-  <title>John Doe</title>
+  <title>Trabalho de Formatura Supervisionado</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
@@ -15,99 +16,331 @@
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
   <link href='https://fonts.googleapis.com/css?family=Oswald:700' rel='stylesheet' type='text/css'>
 </head>
+
 <body>
 
 
-<!-- Navigation -->
-	<nav class="navbar navbar-inverse navbar-static-top" role="navigation">
-	  <div class="container">
-		<div class="navbar-header">
-		  <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
-						<span class="sr-only">Toggle navigation</span>
-						<span class="icon-bar"></span>
-						<span class="icon-bar"></span>
-						<span class="icon-bar"></span>
-					</button>
-		</div>
-
-		<!-- Collect the nav links, forms, and other content for toggling -->
-		<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-		  <ul class="nav navbar-nav">
-				  <li><a href="index.html">Home</a></li>
-				  <li><a href="#">Projects</a></li>
-				  <li><a href="#publications">Publications</a></li> 
-				  <li><a href="#">CV</a></li> 
-		  </ul>
-		</div>
-	  </div>
-	</nav>
-  
-  <!-- Page Content -->
+  <!-- Navigation -->
+  <nav class="navbar navbar-inverse navbar-static-top" role="navigation">
     <div class="container">
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+          data-target="#bs-example-navbar-collapse-1">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+      </div>
 
-        <div class="row">
+      <!-- Collect the nav links, forms, and other content for toggling -->
+      <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+        <ul class="nav navbar-nav">
+          <li><a href="index.html">Início</a></li>
+          <li><a href="#proposta">Proposta</a></li>
+          <li><a href="#resumo">Resumo</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
 
-            <!-- Entries Column -->
-            <div class="col-md-8" style="height: 100vh;">
-                
-                <!-- Main Image -->
-                <img class="img-responsive" src="photo.gif" alt=""><br>
-                
-                <div style="margin-top:3%; text-align:justify;">                
-					<p>Lorem ipsum dolor sit amet, consectetur adipiscing <a href="#">elit</a>, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
-					
-					<p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</p>
-					
-					<p>Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum</p>
-                </div>
-            </div> 
+  <!-- Page Content -->
+  <div class="container">
 
-            <!-- Contact Info on the Sidebar -->
-            <div class="col-md-4">
-                <div style="font-family: 'Oswald', sans-serif; font-size: 32px;"><b>John Doe</b></div><br>
-                <p><b>john at doe.com</b><br>
-                <p>Random Department<br>
-                University of Randomness<br>
-                Street<br>
-                City <br>
-                Country<br>
-                </p>
-            </div>
-            
-            
-            <!-- Links on the Sidebar -->
-            <div class="col-md-4" style="margin-top:2%">
-              <dd><a href="#">Google Scholar</a></dd> 
-              <dd><a href="#">Twitter</a></dd>
-              <dd><a href="#">LinkedIn</a></dd>
-            </div>
-            
-            
-            <!-- Publications -->
-            <div class="col-md-8" style="height: 100vh;">    
-                <h2 id="publications">Publications</h2>
-                
-                <strong>Peer-reviewed</strong><br/>
-                <ul>
-                <li class="paper" words="add, your, keywords, here"><a href="#">Full title</a> Names of the authors</li>
-                </ul>
-            
-                <strong>Technical Reports</strong><br/>
-                <ul>
-                <li class="paper" words="add, your, keywords, here"><a href="#">Full title</a>. Details of the report</li>
-                </ul>
-            </div>
+    <div class="row">
 
-            
+      <!-- Entries Column -->
+      <div class="col-md-8" style="height: 100vh;">
+
+        <!-- Main Image -->
+        <!-- <img class="img-responsive" src="photo.gif" alt=""><br> -->
+
+        <div style="margin-top:3vh; text-align:justify;">
+          <h2><b>Trabalho de Formatura Supervisionado</b></h2>
+          <p> <b>Aluno: </b> Ulisses Paixão Cordeiro</p>
+          <p> <b>Orientador: </b>Maurício de Lemos Rodrigues Collares Neto</p>
+          <p> <b>Tema: </b> van Emde Boas Trees, ..., Fusion Trees </p>
         </div>
 
+        <div style="margin-top:3%; text-align:justify;">
+          <h2 id="proposta"><b>Proposta</b></h2>
+
+          <h3><b>Introdução</b></h3>
+
+          <p>
+            Esse trabalho investiga estruturas de dados que superam os limites fundamentais do modelo de comparação,
+            explorando técnicas para reduzir a complexidade de operações de comparação que nos permitem ultrapassar
+            a barreira de tempo de execução usual de O(log n). O projeto busca estudar a fundo e implementar essas
+            avançadas estruturas de dados, além de colocar em prática as técnicas necessárias para seu funcionamento.
+          </p>
+
+          <p>
+            Vamos primeiro estudar o modelo Transdichotomous RAM, em que a memória é interpretada como um array de
+            <i>Words</i>, e podemos fazer quaisquer operações que envolem leitura e escrita de um número constante
+            de <i>Words</i>. Veremos que o tamanho <i>w</i> da <i>Word</i> se relaciona diretamente com o tamanho
+            do problema, <i>w</i> >= lg <i>n</i>. A partir desse modelo, que construíremos todas as análises do projeto.
+          </p>
+
+          <p>
+            Exploraremos então a estrutura da van Emde Boas Tree, que utiliza de um array associativo com chaves de
+            inteiros de <i>w</i> bits, o universo é dividido em √u clusters de tamanho √u. A vEB permite fazer todas as
+            operações em tempo O(log w) com espaço O(u).
+          </p>
+
+          <p>
+            Então, veremos as X/Y-fast tries. As X-fast tries são um passo intermediário para atingir o que queremos.
+            Elas usam de <i>Cuckoo Hashing</i> para obter o sucessor em O(log w), utlizando espaço O(nw).
+            Já as Y-fast tries otimizam isso com a ideia de <i> Indirection </i>, ao agrupar elementos em árvores
+            balanceadas menores, reduzindo o espaço para O(n) e também agora conseguindo a inserção/remoção em O(log w)
+            com alta probabilidade.
+          </p>
+
+          <p>
+            Após isso, começamos o estudo de diversos pré-requisitos necessários para a aplicação das Fusion Trees. Eles
+            vão
+            desde a estrutura base dessa árvore, as B-trees, passa por técnicas com bits que permitem operações e
+            aritmética em O(1),
+            até computação de rank em O(1). Com toda essa construção, conseguimos enfim implementar as Fusion Trees, que
+            combinam
+            tudo o que vimos até aqui para obter buscas de sucessor e predecessor em O(log_w n), inserções em O(log_w n
+            + log log n),
+            com alta probabilidade, e isso tudo com espaço de apenas O(n)!
+          </p>
+
+          <h3><b>Tarefas</b></h3>
+
+          <p>
+            O trabalho pode ser dividido nas seguintes tarefas:
+          </p>
+
+          <ul>
+            <li><b>Estudo e escrita sobre o modelo Transdichotomous RAM:</b> É um modelo proposto por
+              <a href="https://doi.org/10.1016%2F0022-0000%2893%2990040-4">Michael Fredman e Dan Willard em 1993</a>,
+              que consiste em uma variação da RAM em que se assume que o <i>Word size</i> corresponde ao tamanho do
+              problema.
+            </li>
+            <li><b>Estudo e implementação da vEB Tree:</b> A van Emde Boas Tree foi inventada por um time liderado por
+              <a href="https://doi.org/10.1109/sfcs.1975.26">Peter van Emde Boas em 1975</a>.
+              A estrutura implementa um array associativo com chaves de inteiros de <i>w</i> bits, e com isso consegue
+              fazer todas as operações em tempo O(log w).
+            </li>
+            <li><b>Escrita do capítulo sobre a vEB tree:</b> Explicação sobre como implementar e analisar a vEB tree.
+            </li>
+            <li><b>Estudo, escrita e implementação das X/Y-fast tries:</b> As X-fast tries usam de tabelas de hash e
+              busca binária sobre os níveis para obter a busca em O(log w) com espaço O(nw). Já as Y-fast tries otimizam
+              essa ideia ao agrupar elementos em árvores balanceadas menores reduzindo o espaço para O(n).
+              Ambas foram propostas por <a href="https://doi.org/10.1016/0020-0190(83)90075-3">Willard em 1983</a>.
+            </li>
+            <li><b>Estudo sobre B-trees:</b> As B-trees, propostas por <a
+                href="https://doi.org/10.1145%2F1734663.1734671">
+                Bayer e McCreight em 1972</a>, são árvores de busca balanceadas que utilizam nós com múltiplas chaves
+              para
+              otimizar o acesso a sistemas de armazenamento em disco, garantindo operações em O(log_B n).
+            </li>
+            <li><b>Estudo sobre Word-level parallelism:</b> É uma técnica que trata uma <i>Word</i> de <i>w</i> bits
+              como um pequeno processador vetorial, permitindo que múltiplas operações de bits ou aritméticas sejam
+              realizadas simultaneamente em O(1), superando limites de comparação tradicionais.
+            </li>
+            <li><b>Estudo de outros pré-requisitos (Patricia Tries, Sketching):</b> As Patricia Tries economizam espaço
+              ao armazenar apenas os bits que distinguem as chaves, enquanto o sketching utiliza essa mesma ideia para
+              comprimir esses bits críticos em uma única palavra, permitindo comparações paralelas em O(1).
+            </li>
+            <li><b>Escrita do capítulo preâmbulo das Fusion trees:</b> Explicação sobre todos os conceitos preliminares
+              necessários para se construir uma Fusion tree.
+            </li>
+            <li><b>Estudo, escrita e implementação das Fusion trees:</b> As Fusion Trees <a
+                href="https://doi.org/10.1145%2F100216.100217">
+                (Fredman e Willard, 1990)</a> utilizam sketching e paralelismo em nível de palavra para realizar buscas
+              em O(log_w ​n), superando a barreira da informação ao processar múltiplos bits de distinção
+              simultaneamente
+              em uma única instrução que custa O(1).
+            </li>
+            <li><b>Finalização da monografia, preparação do poster e apresentação:</b> Conclusão do trabalho.
+            </li>
+          </ul>
+
+          <p>
+            Abaixo, o cronograma planejado:
+          </p>
+
+        </div>
+
+        <table class="table table-bordered table-hover mt-5" style="text-align: center">
+          <thead>
+            <tr>
+              <th style="text-align:center">Atividade</th>
+              <th style="text-align:center">Abr</th>
+              <th style="text-align:center">Mai</th>
+              <th style="text-align:center">Jun</th>
+              <th style="text-align:center">Jul</th>
+              <th style="text-align:center">Ago</th>
+              <th style="text-align:center">Set</th>
+              <th style="text-align:center">Out</th>
+              <th style="text-align:center">Nov</th>
+              <th style="text-align:center">Dez</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Estudo e escrita sobre o modelo Transdichotomous RAM</td>
+              <td>X</td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+            </tr>
+            <tr>
+              <td>Estudo e implementação da vEB tree</td>
+              <td>X</td>
+              <td>X</td>
+              <td>X</td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+            </tr>
+            <tr>
+              <td>Escrita do capítulo sobre a vEB tree</td>
+              <td>X</td>
+              <td>X</td>
+              <td>X</td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+            </tr>
+            <tr>
+              <td>Estudo, escrita e implementação das X/Y-fast tries</td>
+              <td></td>
+              <td>X</td>
+              <td>X</td>
+              <td>X</td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+            </tr>
+            <tr>
+              <td>Estudo sobre B-trees</td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td>X</td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+            </tr>
+            <tr>
+              <td>Estudo sobre Word-level parallelism</td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td>X</td>
+              <td>X</td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+            </tr>
+            <tr>
+              <td>Estudo de outros pré-requisitos (Patricia Tries, Sketching)</td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td>X</td>
+              <td>X</td>
+              <td></td>
+              <td></td>
+              <td></td>
+            </tr>
+            <tr>
+              <td>Escrita do capítulo preâmbulo das Fusion trees</td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td>X</td>
+              <td>X</td>
+              <td>X</td>
+              <td></td>
+              <td></td>
+              <td></td>
+            </tr>
+            <tr>
+              <td>Estudo, escrita e implementação das Fusion trees</td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td>X</td>
+              <td>X</td>
+              <td>X</td>
+              <td></td>
+            </tr>
+            <tr>
+              <td>Finalização da monografia, preparação do poster e apresentação</td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td>X</td>
+              <td>X</td>
+              <td>X</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div style="margin-top:3%; padding-bottom: 3vh; text-align:justify;">
+          <h2 id="resumo"><b> Resumo </b></h2>
+
+          <p> O projeto busca a exploração das fronteiras da computação teórica, partindo de estruturas fundamentais
+            até técnicas avançadas de manipulação de bits, compreendendo como a arquitetura do hardware pode ser
+            explorada para romper barreiras de complexidade. Para compreender melhor as estruturas estudadas, será realizada
+            a implementação prática em C++, também permitindo a observação do seu comportamento real. Tudo o que for desenvolvido
+            será documentado em um repositório de código e em uma monografia detalhada, registrando toda a evolução do trabalho. </p>
+        </div>
+      </div>
+
+      <!-- Contact Info on the Sidebar -->
+      <div class="col-md-4" style="margin-top:3vh;">
+        <div style="font-size: 30px;"><b>Ulisses Paixão Cordeiro</b></div><br>
+        <p><b>ulissespaixao@usp.br</b><br>
+        <p>Instituto de Matemática, Estatística e Ciência da Computação<br>
+          Universidade de São Paulo<br>
+        </p>
+      </div>
+
+
+      <!-- Links on the Sidebar -->
+      <div class="col-md-4" style="margin-top:2%">
+        <dd><a href="https://github.com/Ulisses5">GitHub</a></dd>
+        <!-- <dd><a href="">LinkedIn</a></dd> -->
+      </div>
 
     </div>
-    <!-- /.container -->
-    
-    <!-- Other people may like it too! -->
-    <a style="color:#b5bec9;font-size:0.8em; float:right;" href="https://github.com/mavroudisv/plain-academic">Plain Academic</a> 
-    
+
+
+  </div>
+  <!-- /.container -->
+
+  <!-- Other people may like it too! -->
+  <a style="color:#b5bec9;font-size:0.8em; float:right;" href="https://github.com/mavroudisv/plain-academic">Plain
+    Academic</a>
+
 </body>
 
 </html>
