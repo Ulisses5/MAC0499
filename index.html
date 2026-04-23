@@ -59,7 +59,7 @@
           <h2><b>Trabalho de Formatura Supervisionado</b></h2>
           <p> <b>Aluno: </b> Ulisses Paixão Cordeiro</p>
           <p> <b>Orientador: </b>Maurício de Lemos Rodrigues Collares Neto</p>
-          <p> <b>Tema: </b> van Emde Boas Trees, ..., Fusion Trees </p>
+          <p> <b>Tema: </b> Superação da barreira da informação em árvores de busca através da exploração de modelos de máquina </p>
         </div>
 
         <div style="margin-top:3%; text-align:justify;">
@@ -75,10 +75,11 @@
           </p>
 
           <p>
-            Vamos primeiro estudar o modelo Transdichotomous RAM, em que a memória é interpretada como um array de
-            <i>Words</i>, e podemos fazer quaisquer operações que envolem leitura e escrita de um número constante
-            de <i>Words</i>. Veremos que o tamanho <i>w</i> da <i>Word</i> se relaciona diretamente com o tamanho
-            do problema, <i>w</i> >= lg <i>n</i>. A partir desse modelo, que construíremos todas as análises do projeto.
+            Vamos iniciar estudando modelos de computação, principalmente os modelos Transdichotomous RAM e Word RAM. Neles a
+            memória é interpretada como um array de <i>Palavras</i> (Words), e podemos fazer quaisquer operações que 
+            envolvem leitura e escrita de um número constante de <i>Palavras</i>. Com o modelo Transdichotomous,
+            o tamanho <i>w</i> da <i>Palavra</i> se relaciona diretamente com o tamanho do problema, <i>w</i> >= lg <i>n</i>. 
+            O estudo desse tema se extenderá ao longo do projeto, pois construíremos nossas análises a partir do modelo adotado. 
           </p>
 
           <p>
@@ -114,13 +115,15 @@
           </p>
 
           <ul>
-            <li><b>Estudo e escrita sobre o modelo Transdichotomous RAM:</b> É um modelo proposto por
+            <li><b>Estudo e escrita sobre modelos de computação, focando em Transdichotomous RAM e Word RAM:</b> É um
+              modelo proposto por
               <a href="https://doi.org/10.1016%2F0022-0000%2893%2990040-4">Michael Fredman e Dan Willard em 1993</a>,
-              que consiste em uma variação da RAM em que se assume que o <i>Word size</i> corresponde ao tamanho do
+              que consiste em uma variação da RAM em que se assume que o tamanho da <i>Palavra</i> corresponde ao
+              tamanho do
               problema.
             </li>
             <li><b>Estudo e implementação da vEB Tree:</b> A van Emde Boas Tree foi inventada por um time liderado por
-              <a href="https://doi.org/10.1109/sfcs.1975.26">Peter van Emde Boas em 1975</a>.
+              <a href="https://doi.org/10.1007/BF01683268">Peter van Emde Boas em 1976</a>.
               A estrutura implementa um array associativo com chaves de inteiros de <i>w</i> bits, e com isso consegue
               fazer todas as operações em tempo O(log w).
             </li>
@@ -133,11 +136,11 @@
             </li>
             <li><b>Estudo sobre B-trees:</b> As B-trees, propostas por <a
                 href="https://doi.org/10.1145%2F1734663.1734671">
-                Bayer e McCreight em 1972</a>, são árvores de busca balanceadas que utilizam nós com múltiplas chaves
-              para
-              otimizar o acesso a sistemas de armazenamento em disco, garantindo operações em O(log_B n).
+                Bayer e McCreight em 1972</a>, são árvores de busca balanceadas que utilizam nós com múltiplas chaves, 
+                obtendo uma altura de O(log_B n). Elas serão estudadas contínuamente pois servem como estrutura base para
+                as Fusion Trees.
             </li>
-            <li><b>Estudo sobre Word-level parallelism:</b> É uma técnica que trata uma <i>Word</i> de <i>w</i> bits
+            <li><b>Estudo sobre Word-level parallelism:</b> É uma técnica que trata uma <i>Palavra</i> de <i>w</i> bits
               como um pequeno processador vetorial, permitindo que múltiplas operações de bits ou aritméticas sejam
               realizadas simultaneamente em O(1), superando limites de comparação tradicionais.
             </li>
@@ -182,14 +185,14 @@
           </thead>
           <tbody>
             <tr>
-              <td>Estudo e escrita sobre o modelo Transdichotomous RAM</td>
+              <td>Estudo e escrita sobre modelos de computação, focando em Transdichotomous RAM e Word RAM</td>
               <td>X</td>
               <td></td>
               <td></td>
               <td></td>
               <td></td>
               <td></td>
-              <td></td>
+              <td>X</td>
               <td></td>
               <td></td>
             </tr>
@@ -237,7 +240,7 @@
               <td>X</td>
               <td></td>
               <td></td>
-              <td></td>
+              <td>X</td>
               <td></td>
               <td></td>
             </tr>
@@ -273,7 +276,7 @@
               <td>X</td>
               <td>X</td>
               <td>X</td>
-              <td></td>
+              <td>X</td>
               <td></td>
               <td></td>
             </tr>
@@ -283,7 +286,7 @@
               <td></td>
               <td></td>
               <td></td>
-              <td></td>
+              <td>X</td>
               <td>X</td>
               <td>X</td>
               <td>X</td>
@@ -309,9 +312,12 @@
 
           <p> O projeto busca a exploração das fronteiras da computação teórica, partindo de estruturas fundamentais
             até técnicas avançadas de manipulação de bits, compreendendo como a arquitetura do hardware pode ser
-            explorada para romper barreiras de complexidade. Para compreender melhor as estruturas estudadas, será realizada
-            a implementação prática em C++, também permitindo a observação do seu comportamento real. Tudo o que for desenvolvido
-            será documentado em um repositório de código e em uma monografia detalhada, registrando toda a evolução do trabalho. </p>
+            explorada para romper barreiras de complexidade. Para compreender melhor as estruturas estudadas, será
+            realizada
+            a implementação prática em C++, também permitindo a observação do seu comportamento real. Tudo o que for
+            desenvolvido
+            será documentado em um repositório de código e em uma monografia detalhada, registrando toda a evolução do
+            trabalho. </p>
         </div>
       </div>
 
