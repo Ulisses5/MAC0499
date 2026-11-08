@@ -1,0 +1,850 @@
+%!TeX root=../monografia
+%("dica" para o editor de texto: este arquivo é parte de um documento maior)
+% para saber mais: https://tex.stackexchange.com/q/78101
+\chapter{Rascunho VEB}
+\label{cap:rascunho-veb}
+
+\section{Introdução}
+
+\subsection{Problema do predecessor}
+
+O problema do predecessor tem como objetivo manter um conjunto $S$ de $n$
+elementos de um universo $U$ sujeito às seguintes operações:
+\[
+\text{Predecessor}(x) = \max \{y \in S \mid y < x \} 
+\]
+\[
+\text{Sucessor}(x) = \min \{y \in S \mid y > x \}
+\]
+%(Mauricio): x \in U nas consultas também? Imagino que sim.
+
+No nosso caso, estamos interessados no problema dinâmico, que também suporta as
+operações de \textbf{Inserção}, para $x \in U$, e \textbf{Remoção}, para $x \in
+S$.
+
+Com uma Árvore Binária de Busca Balanceada (ABBB), conseguimos resolver o
+problema com custo $\Theta (\lg n)$ para as operações e ocupando espaço $\Theta
+(n)$.
+%(Mauricio): Aqui você já está supondo Word RAM, visto que está considerando que os ponteiros de uma AABB têm tamanho O(1) cada.
+No modelo clássico baseado em comparações, as únicas operações entre os valores
+dos elementos são de comparação (como $\geq, =, \leq$) e nele uma ABBB é
+assintoticamente ótima.
+
+\subsection{Modelo Word RAM}
+
+Vamos usar o modelo \textbf{word RAM} (Random Access Machine), definido por
+Fredman e Willard em 1983 [conferir veracidade]. Nele, a memória é dividida em
+\textit{palavras} com tamanho de $w$ bits. Assim, todos os elementos são
+inteiros de $w$ bits e definimos um universo finito $U=\{0,1,\dots,u-1\}$, com
+$u=2^w$.  
+
+As operações aritméticas e lógicas entre elementos são executadas em tempo
+constante:
+\[+, -, *, /,\%,<<,>>,\&,|,\geq,=,\leq\]
+
+Além disso, temos que $w\geq \lg n$, caso contrário, nem seria possível
+representar o problema nesse modelo. [desenvolver]
+%(Mauricio): Acho que $n$ deveria ser $u$.
+
+Também vale notar que esse modelo já se aproxima da arquitetura real dos
+computadores hoje em dia. Atualmente, um sistema comum tem $64$ bits, ou seja,
+suportaria um universo de palavras de $0$ a $2^{64}$.
+
+\section{Árvore de van Emde Boas}
+
+\subsection{Introdução}
+
+A estrutura foi inventada por um time liderado por Peter van Emde Boas em
+$1976$. Originalmente, a Árvore de van Emde Boas (vEB) é proposta como uma
+espécie de fila de prioridade melhorada, que usa o que eles chamam de ``árvores
+estratificada''. Aqui, vou descrever em mais detalhes outra versão da estrutura,
+com arrays [onde foi proposta pela primeira vez?], que consegue fazer as
+operações descritas anteriormente em tempo $O(\lg \lg u)$ com espaço
+$\Theta(u)$.
+
+Uma ideia simples para lidar com o problema do predecessor seria construir um
+\textit{bit vector}, isto é, um array com o mesmo tamanho do universo, $u$, e
+para cada elemento, o valor $0$ no vetor indica que ele não está em $S$, e $1$
+indica que está. Por exemplo, para um universo com $u=16$ e $S=\{2,3,5,7,11\}$
+temos um \textit{bit vector} $A$ que representamos na
+Figura~\ref{f:veb-bit-vector}.
+
+\begin{figure}[h]
+\centering
+\begin{tikzpicture} 
+    \drawBitArray[A]{0,0,1,1,0,1,0,1,0,0,0,1,0,0,0,0}{0,0}
+\end{tikzpicture}
+\caption{\textit{Bit vector} $A$ representando o conjunto $S={2,3,5,7,11}$
+dentro de um universo com $u=16$. \label{f:veb-bit-vector}}
+\end{figure}
+
+Isso é muito eficiente para consultar se um elemento $x$ pertence a $S$, pois
+basta checar o valor do array no índice $x$, em tempo constante. Contudo, para
+consultas de predecessor o custo de pior caso é linear, $O(u)$. 
+
+Para melhorar isso, uma ideia simples é construir uma árvore binária em cima do
+vetor. Os elementos do vetor são as folhas e, de baixo para cima, definimos
+sucessivamente os pais de cada nó, fazendo o \textbf{OR} entre seus filhos até
+chegar na raiz. Cada nó terá valor 1 ou 0, indicando se pelo menos um dos seus
+sucessores vale $1$. No final, obtemos uma estrutura que pode ser visualizada
+com a Figura~\ref{f:veb-bst-bit-vector}
+
+\enlargethispage{3\baselineskip}
+
+\begin{figure}[!htbp]
+\centering
+    \begin{tikzpicture}
+    % 1. Array Base A
+    \drawBitArray[A]{0,0,1,1,0,1,0,1,0,0,0,1,0,0,0,0}{0,0}
+
+    % 2. Camada 3 (folhas da árvore - combinações de 2 em 2)
+    \foreach \i [evaluate=\i as \j using int(2*\i), evaluate=\i as \k using int(2*\i+1)] in {0,...,7} {
+        \path ($(A\j.north)!.5!(A\k.north)$) ++(0, 0.9) node[veb node] (l3_\i) {};
+        \draw (l3_\i) -- (A\j.north);
+        \draw (l3_\i) -- (A\k.north);
+    }
+    % Valores da Camada 3
+    \foreach \i/\val in {0/0, 1/1, 2/1, 3/1, 4/0, 5/1, 6/0, 7/0} {
+        \node at (l3_\i) {\val};
+    }
+
+    % 3. Camada 2
+    \foreach \i [evaluate=\i as \j using int(2*\i), evaluate=\i as \k using int(2*\i+1)] in {0,...,3} {
+        \path ($(l3_\j.north)!.5!(l3_\k.north)$) ++(0, 0.9) node[veb node] (l2_\i) {};
+        \draw (l2_\i) -- (l3_\j);
+        \draw (l2_\i) -- (l3_\k);
+    }
+    \foreach \i/\val in {0/1, 1/1, 2/1, 3/0} { \node at (l2_\i) {\val}; }
+
+    % 4. Camada 1
+    \foreach \i [evaluate=\i as \j using int(2*\i), evaluate=\i as \k using int(2*\i+1)] in {0,1} {
+        \path ($(l2_\j.north)!.5!(l2_\k.north)$) ++(0, 0.9) node[veb node] (l1_\i) {};
+        \draw (l1_\i) -- (l2_\j);
+        \draw (l1_\i) -- (l2_\k);
+    }
+    \foreach \i/\val in {0/1, 1/1} { \node at (l1_\i) {\val}; }
+
+    % 5. Raiz
+    \path ($(l1_0.north)!.5!(l1_1.north)$) ++(0, 0.9) node[veb node] (root) {1};
+    \draw (root) -- (l1_0);
+    \draw (root) -- (l1_1);   
+\end{tikzpicture}
+\caption{A estrutura representa uma árvore binária construída em cima do
+\textit{bit vector} $A$. Cada nó tem valor 1 ou 0, indicando se pelo menos um de
+seus sucessores tem valor 1.\label{f:veb-bst-bit-vector}}
+\end{figure}
+
+Agora, para encontrar o predecessor de $x$ fazemos os seguintes passos:
+Começamos na folha dada pelo índice $x$ do array, então subimos os nós em
+direção a raiz. Paramos se chegarmos em um nó vindo do seu filho direito e esse
+nó tiver um $1$ como seu filho esquerdo. Por fim, descemos pela subárvore desse
+filho buscando seu valor máximo, ou seja, sempre indo pelo filho mais a direita
+com valor $1$.
+
+Tome, por exemplo, a busca pelo predecessor de $7$ na estrutura de antes. A
+Figura~\ref{f:veb-bst-bit-vector-search} mostra o processo dessa busca, obtendo
+que $\Predecessor(7)=5$.
+
+\begin{figure}[h]
+\centering
+    \begin{tikzpicture}
+    % 1. Array Base A
+    \drawBitArray[A]{0,0,1,1,0,1,0,1,0,0,0,1,0,0,0,0}{0,0}
+
+    % 2. Camada 3 (folhas da árvore - combinações de 2 em 2)
+    \foreach \i [evaluate=\i as \j using int(2*\i), evaluate=\i as \k using int(2*\i+1)] in {0,...,7} {
+        \path ($(A\j.north)!.5!(A\k.north)$) ++(0, 0.9) node[veb node] (l3_\i) {};
+        \draw (l3_\i) -- (A\j.north);
+        \draw (l3_\i) -- (A\k.north);
+    }
+    % Valores da Camada 3
+    \foreach \i/\val in {0/0, 1/1, 2/1, 3/1, 4/0, 5/1, 6/0, 7/0} {
+        \node at (l3_\i) {\val};
+    }
+
+    % 3. Camada 2
+    \foreach \i [evaluate=\i as \j using int(2*\i), evaluate=\i as \k using int(2*\i+1)] in {0,...,3} {
+        \path ($(l3_\j.north)!.5!(l3_\k.north)$) ++(0, 0.9) node[veb node] (l2_\i) {};
+        \draw (l2_\i) -- (l3_\j);
+        \draw (l2_\i) -- (l3_\k);
+    }
+    \foreach \i/\val in {0/1, 1/1, 2/1, 3/0} { \node at (l2_\i) {\val}; }
+
+    % 4. Camada 1
+    \foreach \i [evaluate=\i as \j using int(2*\i), evaluate=\i as \k using int(2*\i+1)] in {0,1} {
+        \path ($(l2_\j.north)!.5!(l2_\k.north)$) ++(0, 0.9) node[veb node] (l1_\i) {};
+        \draw (l1_\i) -- (l2_\j);
+        \draw (l1_\i) -- (l2_\k);
+    }
+    \foreach \i/\val in {0/1, 1/1} { \node at (l1_\i) {\val}; }
+
+    % 5. Raiz
+    \path ($(l1_0.north)!.5!(l1_1.north)$) ++(0, 0.9) node[veb node] (root) {1};
+    \draw (root) -- (l1_0);
+    \draw (root) -- (l1_1);   
+
+    % --- DESENHO DOS CAMINHOS / SETAS DA BUSCA ---
+    % Seta paralela na descida (exemplo: buscando o 7)
+    \draw[path arrow] ($(l2_1.south west)$) -- ($(l3_2.north)$);
+    \draw[path arrow] ($(l3_2.south)$) -- ($(A5.north)+(-0.1,0.0)$);
+
+    % Seta na subida (exemplo: do nó 14 até a raiz)
+    \draw[path arrow] ($(A7.north)+(0.1,0.0)$) -- ($(l3_3.south)+(0.2,0.1)$);
+    \draw[path arrow] ($(l3_3.north west)+(0.2,0.1)$) -- ($(l2_1.south)+(0.2,0.1)$);
+    
+\end{tikzpicture}
+\caption{Processo de busca pelo predecessor de $7$ na estrutura da árvore
+binária construída em cima de $A$. Encontramos que o predecessor de $7$ é o
+elemento $5$.\label{f:veb-bst-bit-vector-search}}
+\end{figure}
+
+Como a altura da árvore é $\lg u$ e essa operação vai fazer no máximo uma
+varredura até a raíz e depois até uma folha, a complexidade desse algoritmo é
+$O(\lg u)$. Ela acaba sendo muito similar a uma ABBB comum para a maioria das
+operações.
+
+Agora, vamos expandir isso para integrar ao conceito de clusters. Podemos dizer,
+que cada um dos nós da árvore define um cluster como sua subárvore, e seu valor
+nos diz se há elementos ou não naquele cluster. Os nós logo acima das folhas tem
+um cluster de tamanho $2$, acima deles, o pai define um cluster de tamanho $4$. 
+%(Mauricio): A frase acima não me parece gramaticalmente correta.
+
+Note que, isso é definido pelo grau da árvore, o número de filhos que cada nó
+tem. Podemos mudar a construção da árvore para que ela tenha um grau fixo
+diferente, como $\sqrt u$. No nosso exemplo, $\sqrt u = \sqrt{16} = 4$. Com
+isso, obtemos uma árvore como a da Figura~\ref{f:veb-clusters}.
+
+\enlargethispage{1\baselineskip}
+
+\begin{figure}[h]
+\centering
+\begin{tikzpicture}
+
+    % 1. Desenha o vetor A na base usando a macro genérica
+    \drawBitArray[A]{0,0,1,1,0,1,0,1,0,0,0,1,0,0,0,0}{0,0}
+
+    % 2. Camada intermediária (4 nós com valores 1, 1, 0, 1)
+    \def\midvals{1,1,1,0}
+    
+    \foreach \val [count=\k from 0] in \midvals {
+        \pgfmathtruncatemacro{\start}{\k*4}
+        \pgfmathtruncatemacro{\finish}{\start+3}
+        
+        % Posiciona o nó centralizado sobre cada bloco de 4 elementos
+        \path ($(A\start.north)!.5!(A\finish.north)$) ++(0, 1.3) node[veb node] (m\k) {\val};
+        
+        % Conecta às 4 células correspondentes do vetor A
+        \foreach \i in {\start,...,\finish} {
+            \draw (m\k) -- (A\i.north);
+        }
+    }
+
+    % 3. Nó Raiz no topo
+    \path ($(m0.north)!.5!(m3.north)$) ++(0, 1.3) node[veb node] (root) {1};
+
+    % Conecta a raiz aos 4 nós intermediários
+    \foreach \k in {0,1,2,3} {
+        \draw (root) -- (m\k);
+    }
+\end{tikzpicture}
+\caption{Árvore de grau $\sqrt u = \sqrt{16} = 4$ construída em cima do
+\textit{bit vector} $A$. Cada nó interno define um cluster que diz se cada um
+dos 4 elementos que ele reúne tem pelo menos um bit 1.\label{f:veb-clusters}}
+\end{figure}
+
+\textit{[explicar o motivo de escolher $\sqrt u$ ]} 
+ 
+Na prática, como o grau da árvore pode ser arbitrariamente grande, é usual que
+os filhos de cada nó sejam dispostos em um vetor. No caso da nossa estrutura, é
+um pouco diferente, todas as folhas já fazem parte de um mesmo
+\textit{bit-vector} $A$. Mas é interessante para nós colocar os filhos da raiz
+em um mesmo vetor. Uma estrutura construída assim é visualizada com a
+Figura~\ref{f:veb-clusters-vector}.
+
+\begin{figure}[h]
+\centering
+\begin{tikzpicture}
+
+    % 1. Array Base A
+    \drawBitArray[A]{0,0,1,1,0,1,0,1,0,0,0,1,0,0,0,0}{0,0}
+
+    % 2. Linhas verticais grossas de divisão de Clusters (a cada 4 elementos)
+    \foreach \x in {3, 7, 11} {
+        \draw[cluster split] ($(A\x.north east)+(0, 0.1)$) -- ($(A\x.south east)-(0, 0.1)$);
+    }
+
+    % 3. Braces (chaves) sobre os clusters
+    \draw[cluster brace] (A0.north west) -- (A3.north east) 
+        node[midway, above=4pt] (b0) {};
+    \draw[cluster brace] (A4.north west) -- (A7.north east) 
+        node[midway, above=4pt] (b1) {};
+    \draw[cluster brace] (A8.north west) -- (A11.north east) 
+        node[midway, above=4pt] (b2) {};
+    \draw[cluster brace] (A12.north west) -- (A15.north east) 
+        node[midway, above=4pt] (b3) {};
+
+    % 4. Array de Summary
+    % Posicionado acima do ponto médio do vetor A
+    \path ($(A0.north)!.5!(A15.north)$) ++(-0.825, 2.0) coordinate (sum_pos);
+    
+    \foreach \val [count=\i from 0] in {1, 1, 1, 0} {
+        \node[array cell] (sum\i) at ($(sum_pos) + (\i*0.55, 0)$) {\val};
+        %\node[array index, above=of sum\i] {\i};
+    }
+
+    % 5. Conexões entre o Summary e os Braces
+    \draw (sum0.south) -- (b0.north);
+    \draw (sum1.south) -- (b1.north);
+    \draw (sum2.south) -- (b2.north);
+    \draw (sum3.south) -- (b3.north);
+
+    % 6. Raiz do summary
+    %\path ($(sum0.north)!.5!(sum3.north)$) ++(-0.825, 2.0) coordinate (raiz_pos);
+
+
+    \path ($(sum0.north)!.5!(sum3.north)$) ++(0, 1.5) node[veb node] (root) {1};
+
+    \draw[cluster brace] (sum0.north west) -- (sum3.north east) node[midway, above=6pt] (brace) {};
+
+    % Conecta a raiz aos 4 nós intermediários
+    \draw (root) -- (brace);
+
+\end{tikzpicture}
+\caption{Árvore de grau 4 construída em cima do \textit{bit-vector} $A$ com seus
+nós internos reunidos em um vetor.\label{f:veb-clusters-vector}}
+\end{figure}
+
+\textit{[meio feia essa figura, não sei se gostei]}
+
+A partir da raiz, conseguimos acessarmente direta o vetor de clusters. Com o
+índice do cluster de interesse, podemos obter a informação se ele está vazio ou
+não instantaneamente. 
+
+Vamos nos aprofundar nessa divisão mais tarde, antes vamos ver como isso nos
+permite definir um sistema de coordenadas hierárquico. Nele, um elemento $x \in
+U$ pode ser escrito da forma $x=c\sqrt u + i$, ou seja, estamos dividindo $x$
+por $\sqrt u$, e temos o $c$ como quociente e $i$ como resto. Podemos obter os
+valores de $c$ e $i$ com algumas contas:
+\[
+c = \left \lfloor \frac{x}{\sqrt u} \right \rfloor 
+\]
+\[
+i = x \mod \sqrt u
+\]
+
+É interessante pensar também na perspectiva binária, pois as operações com bits
+em um computador real são feitas muito mais rápidas que as de divisão. Por conta
+disso, é com essas operações que a implementação da vEB será feita. 
+
+Temos que $x$ é uma palavra de $w$ bits e $u= 2^w$, assim $\sqrt u = \sqrt{2^w}
+= 2^{\frac{w}{2}}$. Ou seja, dividir $x$ por $\sqrt u$ na realidade é fazer um
+bit-shift de $\frac{w}{2}$ bits. Podemos visualizar isso com um exemplo simples,
+com $w=4$ e $x=11$. A representação dos bits de $x$ é dada pela
+Figura~\ref{f:veb-hierarch-coords}.
+
+\begin{figure}[h]
+\centering
+\begin{tikzpicture}
+
+    % 1. Bits de x
+    \def\bitvals{1,0,1,1}
+    \foreach \val [count=\i from 0] in \bitvals {
+        \node[array cell] (x\i) at ($(0,0) + (\i*0.55, 0)$) {\val};
+    }
+    \node[left=0.2cm of x0] {$x$};
+    
+    % 2. Braces (chaves) definindo c e i
+    \draw[cluster brace] (x0.north west) -- (x1.north east) 
+        node[midway, above=4pt] (b0) {};
+    \draw[cluster brace] (x2.north west) -- (x3.north east) 
+        node[midway, above=4pt] (b1) {};
+
+    % Rotulos
+    \node[above right=0pt and -10pt of b0, font=\small] {$c$};
+    \node[above right=0pt and -10pt of b1, font=\small] {$i$};
+
+\end{tikzpicture}
+\caption{O elemento $x=11$ na sua representação como \textit{bit string},
+$1011$. Seus 2 bits mais à esquerda são $c$, enquanto $i$ é dado pelos mais à
+direita.\label{f:veb-hierarch-coords}}
+\end{figure}
+
+Em termos de operações fazemos:
+\begin{align*}
+c & = x >> w/2 \\
+i & = x \And ((1 << w/2)-1) \\
+x & = (c << w/2) | i
+\end{align*}
+
+Adotamos a partir daqui a notação $x=\langle c,i \rangle$ para representar a
+chamada de funções que realizam essas operações para obter algum dos elementos.
+Todas são feitas em tempo constante.                        
+
+Vamos voltar para a nossa estrutura que constrói uma árvore em cima do
+\textit{bit vector} de grau fixo $\sqrt u$. Essa divisão nos dá $\sqrt u$
+clusters de tamanho $\sqrt u$. Seguindo com nosso exemplo, temos $\sqrt u = w =
+4$ e $S=\{2,3,5,7,11\}$. A Figura~\ref{f:veb-clusters-vector-x} para melhor
+visualização oculta o nó raiz.
+
+\begin{figure}[h]
+\centering
+\begin{tikzpicture}
+
+    % 1. Desenha o vetor A na base
+    \def\bitvals{0,0,1,1,0,1,0,1,0,0,0,1,0,0,0,0}
+    \foreach \val [count=\i from 0] in \bitvals {
+        \ifnum\i=11
+            \node[array cell, fill=Lavender] (A\i) at ($(0,0) + (\i*0.55, 0)$) {\val};
+        \else
+            \node[array cell] (A\i) at ($(0,0) + (\i*0.55, 0)$) {\val};
+        \fi
+        \node[array index, below=of A\i] {\i};
+    }
+    \node[left=0.2cm of A0] {$A$};
+
+    % 2. Linhas verticais grossas de divisão de Clusters (a cada 4 elementos)
+    \foreach \x in {3, 7, 11} {
+        \draw[cluster split] ($(A\x.north east)+(0, 0.1)$) -- ($(A\x.south east)-(0, 0.1)$);
+    }
+
+    % 3. Braces (chaves) sobre os clusters
+    \draw[cluster brace] (A0.north west) -- (A3.north east) 
+        node[midway, above=4pt] (b0) {};
+    \draw[cluster brace] (A4.north west) -- (A7.north east) 
+        node[midway, above=4pt] (b1) {};
+    \draw[cluster brace] (A8.north west) -- (A11.north east) 
+        node[midway, above=4pt] (b2) {};
+    \draw[cluster brace] (A12.north west) -- (A15.north east) 
+        node[midway, above=4pt] (b3) {};
+
+    % 4. Array de Summary
+    % Posicionado acima do ponto médio do vetor A
+    \path ($(A0.north)!.5!(A15.north)$) ++(-0.825, 2.0) coordinate (sum_pos);
+    
+    \foreach \val [count=\i from 0] in {1, 1, 1, 0} {
+        \ifnum\i=2
+            \node[array cell,  fill=Orchid] (sum\i) at ($(sum_pos) + (\i*0.55, 0)$) {\val};
+        \else
+            \node[array cell] (sum\i) at ($(sum_pos) + (\i*0.55, 0)$) {\val};
+        \fi
+        \node[array index, above=of sum\i] {\i};
+    }
+
+    % 5. Conexões entre o Summary e os Braces
+    \draw (sum0.south) -- (b0.north);
+    \draw (sum1.south) -- (b1.north);
+    \draw (sum2.south) -- (b2.north);
+    \draw (sum3.south) -- (b3.north);
+
+\end{tikzpicture}
+\caption{Árvore de grau 4 construída em cima do \textit{bit-vector} $A$ com seus
+nós internos reunidos em um vetor, o nó raiz é ocultado. O elemento $x=11$ é
+decomposto nas coordenadas $c=2$ e $i=3$, pois $x=c\times \sqrt{16}+i$. O
+cluster de índice $c=2$ está pintado de roxo. O elemento de índice $i=3$ dentro
+do cluster, índice $x=11$ em $A$, é destacado em
+rosa.\label{f:veb-clusters-vector-x}}
+\end{figure}
+
+Destacamos que o sistema hierárquico de coordenadas consegue localizar o
+elemento $x=11$ de forma simples. Como $x=c\times \sqrt{16} + i$, obtemos que
+$c=2$ e $i=3$. Ou seja, $x$ está no cluster $2$, destacado em roxo, e, dentro
+desse cluster, possui índice $3$, esse elemento em rosa na figura. 
+
+Conseguimos então, armazenar a representação binária de $x=1011$ em duas
+palavras de tamanho $w/2$, pois $c=10$ e $i=11$.
+
+% ==============================================================================
+% FIGURA 2: Decomposição vEB (Summary, Clusters e Braces)
+% ==============================================================================
+%\begin{figure}[h]
+%\centering
+%\begin{tikzpicture}
+%
+%    % 1. Array Base A
+%    \drawBitArray[A]{0,0,1,1,0,1,0,1,0,0,0,1,0,0,0,0}{0,0}
+%
+%    % 2. Linhas verticais grossas de divisão de Clusters (a cada 4 elementos)
+%    \foreach \x in {3, 7, 11} {
+%        \draw[cluster split] ($(A\x.north east)+(0, 0.1)$) -- ($(A\x.south east)-(0, 0.1)$);
+%    }
+%
+%    % 3. Braces (chaves) sobre os clusters
+%    \draw[cluster brace] (A0.north west) -- (A3.north east) 
+%        node[midway, above=4pt] (b0) {};
+%    \draw[cluster brace] (A4.north west) -- (A7.north east) 
+%        node[midway, above=4pt] (b1) {};
+%    \draw[cluster brace] (A8.north west) -- (A11.north east) 
+%        node[midway, above=4pt] (b2) {};
+%    \draw[cluster brace] (A12.north west) -- (A15.north east) 
+%        node[midway, above=4pt] (b3) {};
+%
+%    % Rotulo \sqrt{u} bits
+%    \node[above right=2pt and -10pt of b3, font=\small] {$\sqrt{u}\text{ bits}$};
+%
+%    % 4. Array de Summary
+%    % Posicionado acima do ponto médio do vetor A
+%    \path ($(A0.north)!.5!(A15.north)$) ++(-0.825, 2.0) coordinate (sum_pos);
+%    
+%    \foreach \val [count=\i from 0] in {1, 1, 1, 0} {
+%        \node[array cell] (sum\i) at ($(sum_pos) + (\i*0.55, 0)$) {\val};
+%        \node[array index, above=of sum\i] {\i};
+%    }
+%    \node[left=0.2cm of sum0, font=\itshape] {summary};
+%    \node[right=0.2cm of sum3, font=\small] {$\sqrt{u}\text{ bits}$};
+%
+%    % 5. Conexões entre o Summary e os Braces
+%    \draw (sum0.south) -- (b0.north);
+%    \draw (sum1.south) -- (b1.north);
+%    \draw (sum2.south) -- (b2.north);
+%    \draw (sum3.south) -- (b3.north);
+%
+%\end{tikzpicture}
+%\end{figure}
+%
+
+Podemos construir um algoritmo intuitivo para uma consulta
+\textit{Predecessor}$(x)$ com o que temos até agora:
+
+\begin{itemize}
+    \item Procuramos dentro do cluster de $x$ pelo primeiro $1$ à sua esquerda;
+    \item Se não achamos, procuramos pelo primeiro $1$ à esquerda de $c$, ou
+    seja o primeiro cluster não vazio à esquerda do cluster de $x$; 
+    \item Encontrado esse cluster, queremos o maior elemento dentro dele. O $1$
+    mais à direita.
+\end{itemize}
+
+Essa rotina simples é mais eficiente que o \textit{bit vector}, mas cada passo
+dela custa $O(\sqrt{u})$, então ela ainda é pior que aquela árvore binária que
+construímos antes. 
+
+Para melhorar isso, podemos expandir essa ideia recursivamente. Nossa estrutura
+vEB terá $\sqrt{u}$ clusters e um sumário, e eles serão também estruturas vEB
+contendo clusters e sumários.
+
+No momento, uma árvore vEB denominada $V$ de tamanho $u$ com tamanho de
+\textit{palavra} $w$ contém:
+
+\begin{itemize}
+\item $V.clusters:$ Array de $\sqrt u$ Árvores vEBs de tamanho $\sqrt u$ com
+tamanho de \textit{palavra} $\frac{w}{2}$. 
+\item $V.summary:$ Árvore vEB de tamanho $\sqrt{u}$ com tamanho de palavra
+$\frac{w}{2}$
+\end{itemize}
+
+O Programa~\ref{p:veb-first-predecessor} aplica um algoritmo para encontrar o
+predecessor recursivamente, seguindo a ideia da rotina anterior.
+
+\begin{programruledcaption}{Função predecessor recursiva\label{p:veb-first-predecessor}}
+  \begin{lstlisting}[
+    language=pseudocode,
+    style=pseudocode,
+    style=wider,
+    functions={Predecessor},
+    specialidentifiers={},
+  ]
+    Function Predecessor$(V, x=\langle c,i \rangle)$
+        $i$ := Predecessor$(V.cluster[c], i)$
+        if $i$ == $-\infty$
+            $c$ := Predecessor$(V.summary, c)$
+            $i$ := Predecessor$(V.cluster[c], +\infty)$
+        return $\langle c,i \rangle$
+  \end{lstlisting}
+\end{programruledcaption}
+
+É interessante também pensar no algoritmo de inserção nessa estrutura, dado no
+Programa~\ref{p:veb-first-insert}
+
+\begin{programruledcaption}{Função recursiva de inserção \label{p:veb-first-insert}}
+  \begin{lstlisting}[
+    language=pseudocode,
+    style=pseudocode,
+    style=wider,
+    functions={Inserir},
+    specialidentifiers={},
+  ]
+    Function Inserir$(V,x=\langle c,i\rangle)$
+        Inserir$(V.summary, c)$
+        Inserir$(V.cluster[c], i)$
+  \end{lstlisting}
+\end{programruledcaption}
+
+Lembrando que a operação $x=\langle c, i \rangle$ é feita em tempo constante, o
+tempo de execução dessa rotina é dado pela recorrência:
+\[
+T(u) = 2T(\sqrt{u}) + O(1)
+\]
+
+Ou então,
+\[
+T'(\lg u) = 2T'\left (\frac{\lg u}{2}\right ) + O(1)
+\]
+
+Resolvendo, obtemos um custo de $O(\lg u)$.
+
+Podemos também resolver a recorrência do \textit{Predecessor}, que tem
+complexidade $O(\lg u^{\lg 3})$. \textit{[Provar essa recorrência?]} Ainda está
+longe do que gostaríamos, isso porque no pior caso fazemos três chamadas
+recursivas de \textit{Predecessor}.
+
+A chamada na linha 4 pode ser traduzida como buscar o maior elemento dentro de
+um cluster. Se nós armazenamos isso de antemão, com um elemento \textit{max},
+reduzimos para apenas 2 chamadas recursivas no
+Programa~\ref{p:veb-predecessor-max}
+
+\begin{programruledcaption}{Função predecessor recursiva com \emph{max} \label{p:veb-predecessor-max}}
+  \begin{lstlisting}[
+    language=pseudocode,
+    style=pseudocode,
+    style=wider,
+    functions={Predecessor},
+    specialidentifiers={},
+  ]
+    Function Predecessor$(V, x=\langle c,i \rangle)$
+        $i$ := Predecessor$(V.cluster[c], i)$
+        if $i$ == $-\infty$
+            $c$ := Predecessor$(V.summary, c)$
+            $i$ := $V.cluster[c].max$
+        return $\langle c,i \rangle$
+  \end{lstlisting}
+\end{programruledcaption}
+
+A primeira chamada busca no cluster $c$ pelo predecessor de $i$, se ela falha
+então buscamos pelo predecessor desse cluster na estrutura de sumário.
+Gostaríamos poder já saber antes se essa busca dentro do cluster $c$ terá
+sucesso, pois caso contrário podemos pular essa chamada e ir direto para a
+outra. A maneira mais intuitiva de fazer isso é armazenando também o elemento
+mínimo de cada estrutura. Se $i$ for maior que $V.cluster[c].min$, então a busca
+dentro do cluster deve ser realizada pois encontraremos o predecessor lá. Caso
+contrário, podemos partir para a busca de outro cluster, sem precisar varrer
+$c$. O algoritmo de predecessor então fica da forma apresentada no
+Programa~\ref{p:veb-predecessor-min-max}
+
+\begin{programruledcaption}{Função predecessor recursiva com \emph{min} e \emph{max}\label{p:veb-predecessor-min-max}}
+  \begin{lstlisting}[
+    language=pseudocode,
+    style=pseudocode,
+    style=wider,
+    functions={Predecessor},
+    specialidentifiers={},
+  ]
+    Function Predecessor$(V, x=\langle c,i \rangle)$
+        if $i$ > $V.cluster[c].min$
+            $i$ := Predecessor$(V.cluster[c], i)$
+        else
+            $c$ := Predecessor$(V.summary, c)$
+            $i$ := $V.cluster[c].max$
+        return $\langle c,i \rangle$
+  \end{lstlisting}
+\end{programruledcaption}
+
+Com isso, temos apenas uma chamada recursiva e o custo da recorrência é dado
+por:
+\[
+T(u) = T(\sqrt u) + O(1)
+\]
+
+Ou então, aplicando log temos $T'(\lg u) = T'(\lg \sqrt u) + O(1)$, que em
+termos de $w$ é:
+\[
+T'(w) = T'\left (\frac{w}{2}\right ) + O(1)
+\]
+
+Isso, é claro, é resolvido para $O(\lg w)$, ou seja, $O(\lg \lg u)$, como
+queríamos.
+
+Com essa adição, o algoritmo de inserção ainda permanece com a mesma
+complexidade, apenas mantendo registro do mínimo e máximo. O
+Programa~\ref{p:veb-insert-min-max} aplica esse algoritmo.
+
+\begin{programruledcaption}{Função recursiva de inserção com \emph{min} e \emph{max} \label{p:veb-insert-min-max}}
+  \begin{lstlisting}[
+    language=pseudocode,
+    style=pseudocode,
+    style=wider,
+    functions={Inserir},
+    specialidentifiers={},
+  ]
+    Function Inserir$(V,x=\langle c,i\rangle)$
+        if $x$ < $V.min$
+            $V.min$ := $x$
+        if $x$ > $V.max$
+            $V.max$ := $x$
+        Inserir$(V.summary, c)$
+        Inserir$(V.cluster[c], i)$
+  \end{lstlisting}
+\end{programruledcaption}
+
+Para também obtermos a complexidade de $O(\lg \lg u)$ na inserção, queremos
+poder fazer apenas uma das chamadas recursivas também. Note que a inserção na
+estrutura de sumário que fazemos na linha 5 só é necessária quando o primeiro
+elemento daquele cluster é inserido. A ideia é que nesse caso podemos fazer
+apenas essa inserção, e não inserimos o elemento recursivamente no cluster,
+apenas o salvamos a parte. O elemento escolhido para isso será o \textit{min},
+que também servirá como indicativo se um cluster está vazio ou não. As funções
+\textsc{empty}$(V)$ e \textsc{NotEmpty}$(V)$ vão retornar se $V.min$ tem o valor
+especial $none$ ou não. 
+
+O algoritmo fica da forma do Programa~\ref{p:veb-final-insert}.
+
+\begin{programruledcaption}{Função recursiva de inserção com \emph{lazy min} \label{p:veb-final-insert}}
+  \begin{lstlisting}[
+    language=pseudocode,
+    style=pseudocode,
+    style=wider,
+    functions={Inserir},
+    specialidentifiers={},
+  ]
+    Function Inserir$(V,x=\langle c,i\rangle)$
+        if $V.min$ = none
+            $V.min$ := $V.max$ := $x$
+            return
+        if $x$ <= $V.min$
+            \func{Swap}$(x,V.min)$
+        if $x$ > $V.max$
+            $V.max$ := $x$
+        if \func{Empty}$(V.cluster[c])$
+            Inserir$(V.summary, c)$
+        Inserir$(V.cluster[c], i)$
+  \end{lstlisting}
+\end{programruledcaption}
+
+Se a estrutura está vazia no caso base da primeira linha, apenas salvamos $x$
+como o \textit{min} (e o \textit{max}) e retornamos sem mais chamadas. Então,
+quando é feita a chamada na linha 8 de custo $O(\lg \lg u)$, sabemos que a
+chamada da linha 10 terá custo constante pois cairá nesse caso. Assim, a
+complexidade obtida é $O(\lg \lg u)$.
+
+Vale notar que no caso da linha 4, o elemento que queremos inserir é menor que o
+\textit{min} e, portanto, precisamos inserir o antigo \textit{min} na estrutura,
+então é feito um \textit{swap} entre os valores.  
+
+Com essas mudanças, precisamos fazer pequenas alterações no nosso código do
+\textit{predecessor} para lidar com o caso especial do \textit{min} e das
+estruturas vazias, resultando no Programa~\ref{p:veb-final-predecessor}
+
+\begin{programruledcaption}{Função predecessor recursiva com \emph{lazy min} \label{p:veb-final-predecessor}}
+  \begin{lstlisting}[
+    language=pseudocode,
+    style=pseudocode,
+    style=wider,
+    functions={Predecessor},
+    specialidentifiers={},
+  ]
+    Function Predecessor$(V, x=\langle c,i \rangle)$
+        if $x$ <= $V.min$
+            return null
+        if \func{NotEmpty}$(V.cluster[c])$ and $i$ > $V.cluster[c].min$
+            return $\langle c,$ Predecessor$(V.cluster[c], i) \rangle$
+        else
+            $c'$ := Predecessor$(V.summary, c)$
+            return $\langle c',V.cluster[c'].max \rangle$
+  \end{lstlisting}
+\end{programruledcaption}
+
+\subsection{Estruturas e códigos finais largados abaixo}
+
+Por fim, a estrutura final de uma árvore vEB denominada $V$ de tamanho $u$ com
+tamanho de \textit{palavra} $w$ contém:
+\begin{itemize}
+\item $V.min:$ Palavra armazenada pela árvore em si.
+\item $V.clusters:$ Array de $\sqrt u$ Árvores vEBs de tamanho $\sqrt u$ com
+tamanho de \textit{palavra} $\frac{w}{2}$. 
+\item $V.summary:$ Árvore vEB de tamanho $\sqrt{u}$ com tamanho de palavra
+$\frac{w}{2}$
+\item $V.max:$ Cópia do elemento máximo da árvore
+\end{itemize}
+
+Pseudocódigo das operações:
+
+\begin{programruledcaption}{Função predecessor recursiva com \emph{lazy min} \label{p:veb-final-predecessor-1}}
+  \begin{lstlisting}[
+    language=pseudocode,
+    style=pseudocode,
+    style=wider,
+    functions={Predecessor},
+    specialidentifiers={},
+  ]
+    Function Predecessor$(V, x=\langle c,i \rangle)$
+        if $x$ <= $V.min$
+            return null
+        if \func{NotEmpty}$(V.cluster[c])$ and $i$ > $V.cluster[c].min$
+            return $\langle c,$ Predecessor$(V.cluster[c], i) \rangle$
+        else
+            $c'$ := Predecessor$(V.summary, c)$
+            return $\langle c',V.cluster[c'].max \rangle$
+  \end{lstlisting}
+\end{programruledcaption}
+
+\begin{programruledcaption}{Função sucessor recursiva com \emph{lazy min} \label{p:veb-final-successor-1}}
+  \begin{lstlisting}[
+    language=pseudocode,
+    style=pseudocode,
+    style=wider,
+    functions={Sucessor},
+    specialidentifiers={},
+  ]
+    Function Sucessor$(V, x=\langle c,i \rangle)$
+        if $x$ <= $V.min$
+            return $V.min$
+        if \func{NotEmpty}$(V.cluster[c])$ and $i$ < $V.cluster[c].max$
+            return $\langle c,$ Sucessor$(V.cluster[c], i) \rangle$
+        else
+            $c'$ := Predecessor$(V.summary, c)$
+            return $\langle c',V.cluster[c'].min \rangle$
+  \end{lstlisting}
+\end{programruledcaption}
+
+\begin{programruledcaption}{Função recursiva de inserção com \emph{lazy min} \label{p:veb-final-insert-1}}
+  \begin{lstlisting}[
+    language=pseudocode,
+    style=pseudocode,
+    style=wider,
+    functions={Inserir},
+    specialidentifiers={},
+  ]
+    Function Inserir$(V,x=\langle c,i\rangle)$
+        if $V.min$ = none
+            $V.min$ := $V.max$ := $x$
+            return
+        if $x$ <= $V.min$
+            \func{Swap}$(x,V.min)$
+        if $x$ > $V.max$
+            $V.max$ := $x$
+        if \func{Empty}$(V.cluster[c])$
+            Inserir$(V.summary, c)$
+        Inserir$(V.cluster[c], i)$
+  \end{lstlisting}
+\end{programruledcaption}
+
+\begin{programruledcaption}{Função recursiva de remoção com \emph{lazy min} \label{p:veb-final-remove}}
+  \begin{lstlisting}[
+    language=pseudocode,
+    style=pseudocode,
+    style=wider,
+    functions={Remover},
+    specialidentifiers={},
+  ]
+    Function Remover$(V,x=\langle c,i\rangle)$
+        if $x$ = $V.min$
+            $c$ := $V.summary.min$
+            if $c$ = none 
+                $V.min$ := none
+                return
+        $x$ := $V.min$ := $\langle c, i = V.cluster[c].min \rangle$
+        Remover$(V.cluster[c],i)$
+        if $V.cluster[c].min$ = none
+            Remover$(V.summary,c)$
+        if $V.summary.min$ = none
+            $V.max$ := $V.min$
+        else 
+            $c'$ := V.summary.max
+            $V.max$ := $\langle c', V.cluster[c'].max \rangle$
+  \end{lstlisting}
+\end{programruledcaption}
+
+Anotações feedback vEB:
+\begin{itemize}
+    \item Questão do espaço - esqueci de colocar o básico desse espaço $O(u)$ e falar da versão com espaço linear (hash tables e gancho para X/Y-fast tries)
+    \item Pensar em exemplos melhores, mais didáticos - na busca por exemplo mostrar algum caso em que mais de um elemento do summary seja ``atravessado''  (como um summary = [1, 1, 0, 1] para uma busca de predecessor de um elemento no ultimo cluster (12,13,14,15))
+    \item Mostrar as operações acontecendo por meio de figuras
+\end{itemize}

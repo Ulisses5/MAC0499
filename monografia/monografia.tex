@@ -48,6 +48,52 @@
 % também define os comandos para capa, folha de rosto etc.
 \usepackage{imegoodies}
 \usepackage[thesis]{imelooks}
+\usetikzlibrary{calc, positioning, decorations.pathreplacing, arrows.meta, shapes.geometric, fit}
+\usepackage[dvipsnames]{xcolor}
+%\usepackage[noend]{algpseudocode}
+
+\newcommand{\len}{\operatorname{len}}
+\newcommand{\Predecessor}{\operatorname{Predecessor}}
+%\setcounter{totalnumber}{5}
+
+% --- BIBLIOTECA DE ESTILOS DE ESTRUTURAS DE DADOS ---
+\tikzset{
+    % Nós e Arrays
+    veb node/.style={
+        circle, draw, inner sep=0pt,
+        minimum size=5.5mm, font=\small\sffamily
+    },
+    array cell/.style={
+        draw, minimum width=0.55cm, minimum height=0.55cm,
+        inner sep=0pt, font=\small\sffamily, outer sep=0pt
+    },
+    array index/.style={
+        font=\small\sffamily, node distance=0.15cm
+    },
+    % Destaque de caminhos
+    path arrow/.style={
+        ->, >={Stealth[scale=0.7]}, line width=2pt, draw=red!70,
+        shorten >=1pt, shorten <=1pt 
+    },
+    % Divisórias espessas de clusters
+    cluster split/.style={
+        line width=2pt, draw=black
+    },
+    % Chaves (braces)
+    cluster brace/.style={
+        decorate, decoration={brace, amplitude=4pt, raise=2pt}
+    }
+}
+
+% --- MACRO PARA GERAR VETORES ---
+% #1: Nome base dos nós, #2: Lista de valores, #3: Posição (opcional/coordenada)
+\newcommand{\drawBitArray}[3][A]{
+    \foreach \val [count=\i from 0] in {#2} {
+        \node[array cell] (#1\i) at ($(#3) + (\i*0.55, 0)$) {\val};
+        \node[array index, below=of #1\i] {\i};
+    }
+    \node[left=0.2cm of #10] {$#1$};
+}
 
 %\nocolorlinks % para impressão em P&B
 
@@ -98,18 +144,16 @@
 \title{Título do trabalho}[um subtítulo]
 \translatedtitle{Title of the document}[a subtitle]
 
-\author[fem]{Nome Completo}
+\author{Ulisses Paixão Cordeiro}
 
 \def\profa{Prof\kern.02em.\kern-.07emª\kern.07em}
 \def\dra{Dr\kern-.04em.\kern-.11emª\kern.07em}
 
 % Para TCCs, este comando define o supervisor
-\orientador[fem]{\profa{} \dra{} Fulana de Tal}
+\orientador{Prof. Dr. Maurício de Lemos Rodrigues Collares Neto}
 
 % Se não houver, remova; se houver mais de um, basta
 % repetir o comando quantas vezes forem necessárias
-\coorientador{Prof. Dr. Ciclano de Tal}
-\coorientador[fem]{\profa{} \dra{} Beltrana de Tal}
 
 \banca{
   \profa{} \dra{} Fulana de Tal (orientadora) -- IME-USP [sem ponto final],
@@ -124,9 +168,9 @@
 % definitiva (ou seja, a versão final após a incorporação das sugestões
 % da banca).
 \tipotese{
-  mestrado,
+  %mestrado,
   %doutorado,
-  %tcc,
+  tcc,
   %definitiva, % É a versão para defesa ou a versão definitiva?
   %quali, % É qualificação?
   programa={Ciência da Computação},
@@ -159,8 +203,8 @@
 %
 %\apoio{During the development if this work, the author received\\
 %      financial support from FAPESP -- grant \#aaaa/nnnnn-d}
-\apoio{Durante o desenvolvimento deste trabalho o autor
-       recebeu auxílio financeiro da XXXX}
+%\apoio{Durante o desenvolvimento deste trabalho o autor
+%       recebeu auxílio financeiro da XXXX}
 
 % A licença do seu trabalho. Use CC-BY, CC-BY-NC, CC-BY-ND, CC-BY-SA,
 % CC-BY-NC-SA ou CC-BY-NC-ND para escolher a licença Creative Commons
@@ -348,14 +392,16 @@ texto texto texto texto. Texto opcional.
 \singlespacing
 
 % A introdução não tem número de capítulo, então os cabeçalhos também não
-\pagestyle{unnumberedchapter}
-\input{conteudo/00-exemplo-introducao}
-\pagestyle{mainmatter}
-\input{conteudo/01-exemplo-normas-ime}
-\input{conteudo/02-exemplo-usando-o-modelo}
-\input{conteudo/03-exemplo-latex}
-\input{conteudo/04-exemplo-tutorial}
-\input{conteudo/05-exemplo-exemplos}
+%\pagestyle{unnumberedchapter}
+%\input{conteudo/00-exemplo-introducao}
+%\pagestyle{mainmatter}
+%\input{conteudo/01-exemplo-normas-ime}
+%\input{conteudo/02-exemplo-usando-o-modelo}
+%\input{conteudo/03-exemplo-latex}
+%\input{conteudo/04-exemplo-tutorial}
+%\input{conteudo/05-exemplo-exemplos}
+\input{conteudo/06-rascunho-veb}
+\input{conteudo/07-rascunho-fusion}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%% APÊNDICES E ANEXOS %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -393,7 +439,7 @@ texto texto texto texto. Texto opcional.
 % só há apêndices, sem anexos, provavelmente não é necessário.
 \addappheadtotoc
 
-\input{conteudo/apendice-exemplo-faq}
+%\input{conteudo/apendice-exemplo-faq}
 \par
 
 %%%% Anexos %%%%
@@ -408,9 +454,9 @@ texto texto texto texto. Texto opcional.
 % só há anexos, sem apêndices, provavelmente não é necessário.
 \addappheadtotoc
 
-\input{conteudo/anexo-exemplo-imegoodies}
+%\input{conteudo/anexo-exemplo-imegoodies}
 \par
-\input{conteudo/anexo-exemplo-pseudocodigo}
+%\input{conteudo/anexo-exemplo-pseudocodigo}
 \par
 
 
@@ -426,11 +472,11 @@ texto texto texto texto. Texto opcional.
 
 % A bibliografia é obrigatória
 
-\printbibliography[
-  title=\refname\label{sec:bib}, % "Referências", recomendado pela ABNT
-  %title=\bibname\label{sec:bib}, % "Bibliografia"
-  heading=bibintoc, % Inclui a bibliografia no sumário
-]
+%\printbibliography[
+%  title=\refname\label{sec:bib}, % "Referências", recomendado pela ABNT
+% %title=\bibname\label{sec:bib}, % "Bibliografia"
+%  heading=bibintoc, % Inclui a bibliografia no sumário
+%]
 
 \printindex % imprime o índice remissivo no documento (opcional)
 

@@ -1,0 +1,31 @@
+{
+  "latex-workshop.latex.tools": [
+    {
+      "name": "make",
+      "command": "make",
+      "args": [
+        "-C",
+        "%WORKSPACE_FOLDER%/monografia"
+      ],
+      "env": {}
+    }
+  ],
+  "latex-workshop.latex.recipes": [
+    {
+      "name": "make",
+      "tools": [
+        "make"
+      ]
+    }
+  ],
+  "latex-workshop.latex.build.forceRecipeUsage": true,
+  "latex-workshop.latex.outDir": "%WORKSPACE_FOLDER%/monografia",
+  "latex-workshop.latex.rootFile.doNotScanSubdirectories": true
+  "latex-workshop.latex.autoBuild.run": "never",
+  "latex-workshop.latex.autoBuild.cleanAndBuild.enabled": false
+"[latex]": {
+    "editor.wordWrap": "off",
+    "editor.maxTokenizationSegmentLength": 20000
+  },
+  "rewrap.autoWrap.enabled": true
+}
