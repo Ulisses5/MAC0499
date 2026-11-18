@@ -784,12 +784,12 @@ Pseudocódigo das operações:
     specialidentifiers={},
   ]
     Function Sucessor$(V, x=\langle c,i \rangle)$
-        if $x$ <= $V.min$
+        if $x$ < $V.min$
             return $V.min$
         if \func{NotEmpty}$(V.cluster[c])$ and $i$ < $V.cluster[c].max$
             return $\langle c,$ Sucessor$(V.cluster[c], i) \rangle$
         else
-            $c'$ := Predecessor$(V.summary, c)$
+            $c'$ := Sucessor$(V.summary, c)$
             return $\langle c',V.cluster[c'].min \rangle$
   \end{lstlisting}
 \end{programruledcaption}
@@ -830,7 +830,7 @@ Pseudocódigo das operações:
             if $c$ = none 
                 $V.min$ := none
                 return
-        $x$ := $V.min$ := $\langle c, i = V.cluster[c].min \rangle$
+            $x$ := $V.min$ := $\langle c, i = V.cluster[c].min \rangle$
         Remover$(V.cluster[c],i)$
         if $V.cluster[c].min$ = none
             Remover$(V.summary,c)$
