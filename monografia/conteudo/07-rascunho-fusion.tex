@@ -98,13 +98,19 @@ bits:
 & $a_0$ & $a_1$ & $a_2$ & $a_3$ \\
 \cline{2-5}
 \textcolor{Orange}{$A$} = &
-\multicolumn{1}{|c}{\textcolor{orange}{0100}} & \textcolor{orange}{1010} & \textcolor{orange}{0101} & \multicolumn{1}{c|}{\textcolor{orange}{0010}} \\
+\multicolumn{1}{|c}{\textcolor{orange}{0100}} &
+\textcolor{orange}{1010} &
+\textcolor{orange}{0101} &
+ \multicolumn{1}{c|}{\textcolor{orange}{0010}} \\
 \cline{2-5} 
 \hfill \\
 & $b_0$ & $b_1$ & $b_2$ & $b_3$ \\
 \cline{2-5}
 \textcolor{cyan}{$B$} = &
-\multicolumn{1}{|c}{\textcolor{cyan}{1111}} & \textcolor{cyan}{0111} & \textcolor{cyan}{0011} & \multicolumn{1}{c|}{\textcolor{cyan}{0001}} \\
+\multicolumn{1}{|c}{\textcolor{cyan}{1111}} &
+\textcolor{cyan}{0111} &
+\textcolor{cyan}{0011} &
+\multicolumn{1}{c|}{\textcolor{cyan}{0001}} \\
 \cline{2-5}
 \end{tabular}
 \end{figure}
@@ -125,7 +131,10 @@ $-$ & \textcolor{cyan}{$B$} &
 \textcolor{blue}{0}\textcolor{cyan}{0001} \\
 \hline
 & \textcolor{CarnationPink}{$R$} &
-\textcolor{Purple}{0}\textcolor{CarnationPink}{1011} & \textcolor{Purple}{1}\textcolor{CarnationPink}{0011} & \textcolor{Purple}{1}\textcolor{CarnationPink}{0010} & \textcolor{Purple}{1}\textcolor{CarnationPink}{0001} 
+\textcolor{Purple}{1}\textcolor{CarnationPink}{0010} &
+\textcolor{Purple}{1}\textcolor{CarnationPink}{0110} &
+\textcolor{Purple}{0}\textcolor{CarnationPink}{1101} &
+\textcolor{Purple}{1}\textcolor{CarnationPink}{0001} 
 \end{tabular}
 \end{figure}
 
@@ -138,7 +147,10 @@ apenas nos bits que nos interessam da subtração, obtemos $R$:
 \begin{tabular}{c|cccc|}
 \cline{2-5}
 \textcolor{CarnationPink}{$R$} = &
-\textcolor{Purple}{0}\textcolor{CarnationPink}{0000} & \textcolor{Purple}{1}\textcolor{CarnationPink}{0000} & \textcolor{Purple}{1}\textcolor{CarnationPink}{0000} & \textcolor{Purple}{1}\textcolor{CarnationPink}{0000} \\
+\textcolor{Purple}{1}\textcolor{CarnationPink}{0000} &
+\textcolor{Purple}{1}\textcolor{CarnationPink}{0000} &
+\textcolor{Purple}{0}\textcolor{CarnationPink}{0000} &
+\textcolor{Purple}{1}\textcolor{CarnationPink}{0000} \\
 \cline{2-5}
 \end{tabular}
 \end{figure}
@@ -196,7 +208,7 @@ de palavra de 20 bits, queremos obter:
 \end{tabular}
 \end{figure}
 
-A resposta nesse caso é usar $M=00001000010000100001$. A operação $q\times M=R$
+A resposta nesse caso é usar $M=00001000010000100001$. A operação $q \times M = R$
 nos dá:
 
 \begin{figure}[h]
@@ -268,7 +280,7 @@ um bit 1.
 \begin{itemize}
     \item Formar um número $M$ com um bit $1$ no bit mais à direita de cada
     cópia desejada de $q$. 
-    \item Fazer a multiplicação $q\times M = R$
+    \item Fazer a multiplicação $q \times M = R$
     \item Retornar $Q$, o resultado de $R$ \textbf{OR} uma palavra que contenha
     bits 1 no índice dos bits sentinelas de $R$. 
 \end{itemize} 
@@ -299,7 +311,10 @@ em uma palavra que nomeamos $R$:
 \textcolor{blue}{0}\textcolor{cyan}{1101} \\
 \hline
 & \textcolor{CarnationPink}{$R$} & 
-\textcolor{Purple}{1}\textcolor{CarnationPink}{0000} & \textcolor{Purple}{1}\textcolor{CarnationPink}{0000} & \textcolor{Purple}{0}\textcolor{CarnationPink}{0000} & \textcolor{Purple}{0}\textcolor{CarnationPink}{0000} 
+\textcolor{Purple}{1}\textcolor{CarnationPink}{0000} &
+\textcolor{Purple}{1}\textcolor{CarnationPink}{0000} &
+\textcolor{Purple}{1}\textcolor{CarnationPink}{0000} &
+\textcolor{Purple}{0}\textcolor{CarnationPink}{0000} 
 \end{tabular}
 \end{figure}
 
@@ -387,7 +402,7 @@ separados por bits 0.
 
 \textbf{Procedimento:} 
 \begin{itemize}
-\item Realizar um \textbf{Parallel Tile} com um multiplicador apropriado para
+\item Realizar uma multiplicação com um multiplicador apropriado para
 empilhar todos os bits de interesse em uma mesma soma. 
 \item Usar um shift e uma máscara para obter o resultado final.
 \end{itemize}
@@ -564,7 +579,7 @@ ela como $F$:
   \end{tabular}
 \end{figure}
 
-Fazemos então $X$ \textbf{AND} $F$ obtendo $R$:
+Fazemos então $X$ \textbf{AND} $F$ obtendo $R_1$:
 
 \begin{figure}[h]
  \bf \Large\centering
@@ -729,7 +744,7 @@ A técnica para fazer isso se chama \textbf{Sketching} e será vista mais a fund
 na próxima seção. Por ora, podemos ter a intuição que precisamos realizar shifts
 de tamanho igual ao número de bits que não nos interessam. Nesse caso, são 3
 bits, então simplesmente precisamos de uma \textit{bit-string} que tenha um bit
-1 nas posições $0,3$ e 6, $M=001001001$.
+1 na primeira posição e repetir um bit 1 a cada 3 bits, $M=001001001001$.
 
 Os bits que nos interessam estarão posicionados no cluster mais à esquerda da
 palavra original. Aplicamos uma máscara para zerar todos os outros bits e
@@ -749,11 +764,8 @@ para a ponta direita. Ao final, teremos como resultado:
 \subsubsection{Encontrar o primeiro cluster não-vazio}
 
 Para isso, precisamos obter o \textbf{rank} de $C$ em relação às potências de 2.
-Como conseguimos comprimir a informação dos clusters para uma
-\textit{bit-string} de tamanho $\sqrt{w}$, não teremos problemas com espaço e
-podemos usar a técnica do \textbf{Rank Paralelo}. Precisamos apenas da
-\textit{bit-string} que contém ${2^0,2^1,\cdots,2^{\sqrt{w}-1}}$ separados por
-um bit 0 para a comparação:
+Precisamos apenas da \textit{bit-string} que contém
+${2^0,2^1,\cdots,2^{\sqrt{w}-1}}$ separados por um bit 0 para a comparação:
 
 \begin{figure}[h]
  \bf \Large\centering
@@ -768,14 +780,22 @@ um bit 0 para a comparação:
   \end{tabular}
 \end{figure}
 
-Denominaremos o índice do primeiro cluster não vazio como $c$, e ele será
-definido pelo \textbf{rank}$(C)$ em relação a $P$ menos 1. É evidente que, no
-nosso exemplo, o \textbf{rank} de $C$ é 4, então podemos concluir que o cluster
-3 de $X$ não está vazio.
+Note que essa \textit{bit-string} tem tamanho $W=20$. Como já foi mencionado,
+os problemas de espaço para usar a técnica do \textbf{Rank Paralelo} são apenas uma
+tecnicalidade para ser contornada, então vamos seguir mostrando a teoria como se
+pudessemos fazer as operações com uma palavra desse tamanho.
 
+Denominaremos o índice do primeiro cluster não vazio como $c$, lembrando que
+contamos os clusters da direita para a esquerda iniciando no índice 0. O
+\textbf{rank}$(C)$ em relação a $P$ será denominado $\textbf{rank}(P,C)$ e nos
+diz objetivamente o número de potências de 2 em $P$ menores ou iguais a $C$.
+Para obter o índice $c$ então, precisamos fazer a conta:
 \[
 c=\textbf{rank}(P,C)-1
 \]
+
+É evidente que, no nosso exemplo, o \textbf{rank} de $C$ é 4, então podemos
+concluir que o cluster 3 de $X$ não está vazio.
 
 \textit{[Pensar numa notação para o \textbf{rank} em relação a $P$ em contraste
 com a definição anterior que fiz, em que o \textbf{rank}$(q)$ está atrelado
@@ -791,7 +811,7 @@ $X$:
  \bf \Large\centering
  \begin{tabular}{c|c|}
 \cline{2-2}
-\textcolor{PineGreen}{$X_0$} = &
+\textcolor{PineGreen}{$X_3$} = &
 \textcolor{PineGreen}{0101} \\
 \cline{2-2}
   \end{tabular}
@@ -800,10 +820,10 @@ $X$:
 Para encontrar o primeiro bit 1, a mesma lógica se aplica. 
 
 \[
-d=\textbf{rank}(P,X_0)-1
+d=\textbf{rank}(P,X_3)-1
 \]
 
-Computando o \textbf{rank}$(X_0)$ em relação a $P$, encontramos o valor 3, e,
+Computando o \textbf{rank}$(X_3)$ em relação a $P$, encontramos o valor 3, e,
 portanto, $d=2$. Por fim, obtemos o índice do primeiro bit setado de $X$ fazendo
 a conta:
 
