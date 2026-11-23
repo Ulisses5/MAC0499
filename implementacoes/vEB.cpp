@@ -219,6 +219,18 @@ public:
     }
 };
 
+void vEBPrintPrompt(){
+    cout << "--------------------------------\n";
+    cout << "1: Criar uma nova àrvore de van Emde Boas\n";
+    cout << "2 X: Inserir o elemento X\n";
+    cout << "3 X: Remover o elemento X\n";
+    cout << "4 X: Consultar o prededecessor de X\n";
+    cout << "5 X: Consultar o sucessor de X\n";
+    cout << "6: Imprimir a àrvore\n";
+    cout << "7: Sair\n";
+    cout << "Input operação: ";
+}
+
 
 int main(int argc, char** argv){
 
@@ -227,7 +239,11 @@ int main(int argc, char** argv){
     int op;
     int x;
 
-    while(cin >> op){
+    bool exit = false;
+
+    vEBPrintPrompt();
+
+    while(!exit && cin >> op){
         switch (op)
         {
         case 1:
@@ -252,6 +268,10 @@ int main(int argc, char** argv){
         case 6:
             V->Print();
             break;
+        case 7:
+            exit = true;
+            break;
         } 
+        if (!exit) cout << "Input operação: ";
     }
 }
