@@ -1,8 +1,8 @@
 %!TeX root=../monografia
 %("dica" para o editor de texto: este arquivo é parte de um documento maior)
 % para saber mais: https://tex.stackexchange.com/q/78101
-\chapter{Rascunho VEB}
-\label{cap:rascunho-veb}
+\chapter{VEB}
+\label{cap:veb}
 
 \section{Introdução}
 
@@ -11,10 +11,10 @@
 O problema do predecessor tem como objetivo manter um conjunto $S$ de $n$
 elementos de um universo $U$ sujeito às seguintes operações:
 \[
-\text{Predecessor}(x) = \max \{y \in S \mid y < x \} 
+\Predecessor(x) = \max \{y \in S \mid y < x \} 
 \]
 \[
-\text{Sucessor}(x) = \min \{y \in S \mid y > x \}
+\Sucessor(x) = \min \{y \in S \mid y > x \}
 \]
 %(Mauricio): x \in U nas consultas também? Imagino que sim.
 
@@ -63,19 +63,18 @@ operações descritas anteriormente em tempo $O(\lg \lg u)$ com espaço
 $\Theta(u)$.
 
 Uma ideia simples para lidar com o problema do predecessor seria construir um
-\textit{bit vector}, isto é, um array com o mesmo tamanho do universo, $u$, e
-para cada elemento, o valor $0$ no vetor indica que ele não está em $S$, e $1$
-indica que está. Por exemplo, para um universo com $u=16$ e $S=\{2,3,5,7,11\}$
-temos um \textit{bit vector} $A$ que representamos na
-Figura~\ref{f:veb-bit-vector}.
+vetor de bits, isto é, um array com o mesmo tamanho do universo, $u$, e para
+cada elemento, o valor $0$ no vetor indica que ele não está em $S$, e $1$ indica
+que está. Por exemplo, para um universo com $u=16$ e $S=\{2,3,5,7,11\}$ temos um
+vetor de bits $A$ que representamos na Figura~\ref{f:veb-bit-vector}.
 
 \begin{figure}[h]
 \centering
 \begin{tikzpicture} 
     \drawBitArray[A]{0,0,1,1,0,1,0,1,0,0,0,1,0,0,0,0}{0,0}
 \end{tikzpicture}
-\caption{\textit{Bit vector} $A$ representando o conjunto $S={2,3,5,7,11}$
-dentro de um universo com $u=16$. \label{f:veb-bit-vector}}
+\caption{Vetor de bits $A$ representando o conjunto $S={2,3,5,7,11}$ dentro de
+um universo com $u=16$. \label{f:veb-bit-vector}}
 \end{figure}
 
 Isso é muito eficiente para consultar se um elemento $x$ pertence a $S$, pois
@@ -129,9 +128,9 @@ com a Figura~\ref{f:veb-bst-bit-vector}
     \draw (root) -- (l1_0);
     \draw (root) -- (l1_1);   
 \end{tikzpicture}
-\caption{A estrutura representa uma árvore binária construída em cima do
-\textit{bit vector} $A$. Cada nó tem valor 1 ou 0, indicando se pelo menos um de
-seus sucessores tem valor 1.\label{f:veb-bst-bit-vector}}
+\caption{A estrutura representa uma árvore binária construída em cima do vetor
+de bits $A$. Cada nó tem valor 1 ou 0, indicando se pelo menos um de seus
+sucessores tem valor 1.\label{f:veb-bst-bit-vector}}
 \end{figure}
 
 Agora, para encontrar o predecessor de $x$ fazemos os seguintes passos:
@@ -209,10 +208,10 @@ nos diz se há elementos ou não naquele cluster. Os nós logo acima das folhas 
 um cluster de tamanho $2$, acima deles, o pai define um cluster de tamanho $4$. 
 %(Mauricio): A frase acima não me parece gramaticalmente correta.
 
-Note que, isso é definido pelo grau da árvore, o número de filhos que cada nó
-tem. Podemos mudar a construção da árvore para que ela tenha um grau fixo
-diferente, como $\sqrt u$. No nosso exemplo, $\sqrt u = \sqrt{16} = 4$. Com
-isso, obtemos uma árvore como a da Figura~\ref{f:veb-clusters}.
+Note que, o tamanho dos clusters é definido pelo grau da árvore, o número de
+filhos que cada nó tem. Podemos mudar a construção da árvore para que ela tenha
+um grau fixo diferente, como $\sqrt u$. No nosso exemplo, $\sqrt u = \sqrt{16} =
+4$. Com isso, obtemos uma árvore como a da Figura~\ref{f:veb-clusters}.
 
 \enlargethispage{1\baselineskip}
 
@@ -247,18 +246,18 @@ isso, obtemos uma árvore como a da Figura~\ref{f:veb-clusters}.
         \draw (root) -- (m\k);
     }
 \end{tikzpicture}
-\caption{Árvore de grau $\sqrt u = \sqrt{16} = 4$ construída em cima do
-\textit{bit vector} $A$. Cada nó interno define um cluster que diz se cada um
-dos 4 elementos que ele reúne tem pelo menos um bit 1.\label{f:veb-clusters}}
+\caption{Árvore de grau $\sqrt u = \sqrt{16} = 4$ construída em cima do vetor de
+bits $A$. Cada nó interno define um cluster que diz se cada um dos 4 elementos
+que ele reúne tem pelo menos um bit 1.\label{f:veb-clusters}}
 \end{figure}
 
 \textit{[explicar o motivo de escolher $\sqrt u$ ]} 
  
 Na prática, como o grau da árvore pode ser arbitrariamente grande, é usual que
 os filhos de cada nó sejam dispostos em um vetor. No caso da nossa estrutura, é
-um pouco diferente, todas as folhas já fazem parte de um mesmo
-\textit{bit-vector} $A$. Mas é interessante para nós colocar os filhos da raiz
-em um mesmo vetor. Uma estrutura construída assim é visualizada com a
+um pouco diferente, todas as folhas já fazem parte de um mesmo vetor de bits
+$A$. Mas é interessante para nós colocar os filhos da raiz em um mesmo vetor.
+Uma estrutura construída assim é visualizada com a
 Figura~\ref{f:veb-clusters-vector}.
 
 \begin{figure}[h]
@@ -310,8 +309,8 @@ Figura~\ref{f:veb-clusters-vector}.
     \draw (root) -- (brace);
 
 \end{tikzpicture}
-\caption{Árvore de grau 4 construída em cima do \textit{bit-vector} $A$ com seus
-nós internos reunidos em um vetor.\label{f:veb-clusters-vector}}
+\caption{Árvore de grau 4 construída em cima do vetor de bits $A$ com seus nós
+internos reunidos em um vetor.\label{f:veb-clusters-vector}}
 \end{figure}
 
 \textit{[meio feia essa figura, não sei se gostei]}
@@ -364,8 +363,8 @@ Figura~\ref{f:veb-hierarch-coords}.
     \node[above right=0pt and -10pt of b1, font=\small] {$i$};
 
 \end{tikzpicture}
-\caption{O elemento $x=11$ na sua representação como \textit{bit string},
-$1011$. Seus 2 bits mais à esquerda são $c$, enquanto $i$ é dado pelos mais à
+\caption{O elemento $x=11$ na sua representação como string de bits, $1011$.
+Seus 2 bits mais à esquerda são $c$, enquanto $i$ é dado pelos mais à
 direita.\label{f:veb-hierarch-coords}}
 \end{figure}
 
@@ -380,10 +379,10 @@ Adotamos a partir daqui a notação $x=\langle c,i \rangle$ para representar a
 chamada de funções que realizam essas operações para obter algum dos elementos.
 Todas são feitas em tempo constante.                        
 
-Vamos voltar para a nossa estrutura que constrói uma árvore em cima do
-\textit{bit vector} de grau fixo $\sqrt u$. Essa divisão nos dá $\sqrt u$
-clusters de tamanho $\sqrt u$. Seguindo com nosso exemplo, temos $\sqrt u = w =
-4$ e $S=\{2,3,5,7,11\}$. A Figura~\ref{f:veb-clusters-vector-x} para melhor
+Vamos voltar para a nossa estrutura que constrói uma árvore em cima do vetor de
+bits de grau fixo $\sqrt u$. Essa divisão nos dá $\sqrt u$ clusters de tamanho
+$\sqrt u$. Seguindo com nosso exemplo, temos $\sqrt u = w = 4$ e
+$S=\{2,3,5,7,11\}$. A Figura~\ref{f:veb-clusters-vector-x} para melhor
 visualização oculta o nó raiz.
 
 \begin{figure}[h]
@@ -437,8 +436,8 @@ visualização oculta o nó raiz.
     \draw (sum3.south) -- (b3.north);
 
 \end{tikzpicture}
-\caption{Árvore de grau 4 construída em cima do \textit{bit-vector} $A$ com seus
-nós internos reunidos em um vetor, o nó raiz é ocultado. O elemento $x=11$ é
+\caption{Árvore de grau 4 construída em cima do vetor de bits $A$ com seus nós
+internos reunidos em um vetor, o nó raiz é ocultado. O elemento $x=11$ é
 decomposto nas coordenadas $c=2$ e $i=3$, pois $x=c\times \sqrt{16}+i$. O
 cluster de índice $c=2$ está pintado de roxo. O elemento de índice $i=3$ dentro
 do cluster, índice $x=11$ em $A$, é destacado em
@@ -502,8 +501,8 @@ palavras de tamanho $w/2$, pois $c=10$ e $i=11$.
 %\end{figure}
 %
 
-Podemos construir um algoritmo intuitivo para uma consulta
-\textit{Predecessor}$(x)$ com o que temos até agora:
+Podemos construir um algoritmo intuitivo para uma consulta $\Predecessor(x)$ com
+o que temos até agora:
 
 \begin{itemize}
     \item Procuramos dentro do cluster de $x$ pelo primeiro $1$ à sua esquerda;
@@ -513,8 +512,8 @@ Podemos construir um algoritmo intuitivo para uma consulta
     mais à direita.
 \end{itemize}
 
-Essa rotina simples é mais eficiente que o \textit{bit vector}, mas cada passo
-dela custa $O(\sqrt{u})$, então ela ainda é pior que aquela árvore binária que
+Essa rotina simples é mais eficiente que o vetor de bits, mas cada passo dela
+custa $O(\sqrt{u})$, então ela ainda é pior que aquela árvore binária que
 construímos antes. 
 
 Para melhorar isso, podemos expandir essa ideia recursivamente. Nossa estrutura
@@ -581,10 +580,10 @@ T'(\lg u) = 2T'\left (\frac{\lg u}{2}\right ) + O(1)
 
 Resolvendo, obtemos um custo de $O(\lg u)$.
 
-Podemos também resolver a recorrência do \textit{Predecessor}, que tem
-complexidade $O(\lg u^{\lg 3})$. \textit{[Provar essa recorrência?]} Ainda está
-longe do que gostaríamos, isso porque no pior caso fazemos três chamadas
-recursivas de \textit{Predecessor}.
+Podemos também resolver a recorrência do $\Predecessor$, que tem complexidade
+$O(\lg u^{\lg 3})$. \textit{[Provar essa recorrência?]} Ainda está longe do que
+gostaríamos, porque no pior caso fazemos três chamadas recursivas de
+$\Predecessor$.
 
 A chamada na linha 4 pode ser traduzida como buscar o maior elemento dentro de
 um cluster. Se nós armazenamos isso de antemão, com um elemento \textit{max},
@@ -718,8 +717,8 @@ Vale notar que no caso da linha 4, o elemento que queremos inserir é menor que 
 \textit{min} e, portanto, precisamos inserir o antigo \textit{min} na estrutura,
 então é feito um \textit{swap} entre os valores.  
 
-Com essas mudanças, precisamos fazer pequenas alterações no nosso código do
-\textit{predecessor} para lidar com o caso especial do \textit{min} e das
+Com essas mudanças, precisamos fazer pequenas alterações no nosso código que
+calcula o predecessor para lidar com o caso especial do \textit{min} e das
 estruturas vazias, resultando no Programa~\ref{p:veb-final-predecessor}
 
 \begin{programruledcaption}{Função predecessor recursiva com \emph{lazy min} \label{p:veb-final-predecessor}}
@@ -844,7 +843,11 @@ Pseudocódigo das operações:
 
 Anotações feedback vEB:
 \begin{itemize}
-    \item Questão do espaço - esqueci de colocar o básico desse espaço $O(u)$ e falar da versão com espaço linear (hash tables e gancho para X/Y-fast tries)
-    \item Pensar em exemplos melhores, mais didáticos - na busca por exemplo mostrar algum caso em que mais de um elemento do summary seja ``atravessado''  (como um summary = [1, 1, 0, 1] para uma busca de predecessor de um elemento no ultimo cluster (12,13,14,15))
+    \item Questão do espaço - esqueci de colocar o básico desse espaço $O(u)$ e
+    falar da versão com espaço linear (hash tables e gancho para X/Y-fast tries)
+    \item Pensar em exemplos melhores, mais didáticos - na busca por exemplo
+    mostrar algum caso em que mais de um elemento do summary seja
+    ``atravessado''  (como um summary = [1, 1, 0, 1] para uma busca de
+    predecessor de um elemento no ultimo cluster (12,13,14,15))
     \item Mostrar as operações acontecendo por meio de figuras
 \end{itemize}

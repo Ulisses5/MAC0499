@@ -1,8 +1,8 @@
 %!TeX root=../monografia
 %("dica" para o editor de texto: este arquivo é parte de um documento maior)
 % para saber mais: https://tex.stackexchange.com/q/78101
-\chapter{Rascunho Fusion Trees}
-\label{cap:rascunho-fusion}
+\chapter{Fusion Trees}
+\label{cap:fusion}
 
 \section{Árvores B}
 
@@ -31,7 +31,7 @@ O(f(b) \log_b n).
 \]
 
 A busca funciona por meio da escolha de qual subárvore devemos descer. Ao buscar
-por uma query $q$, quando chegamos em um nó, a subárvore que queremos é dada
+por uma consulta $q$, quando chegamos em um nó, a subárvore que queremos é dada
 pelo número de chaves naquele nó que são menores ou iguais que $q$. Definiremos
 essa quantidade como o \textbf{rank}$(q)$. 
 
@@ -69,10 +69,10 @@ ainda em $O(1)$.
 
 \subsection{Comparação paralela}
 
-Podemos comparar duas \textit{bit strings} $x$ e $y$ de tamanho $s$ com uma
-subtração. Para determinar se $x\geq y$, concatenamos um bit 1 ao início de $x$
-e um 0 para $y$, depois fazemos a subtração dos valores. Por exemplo, para
-$s=4$, $x=1100$ e $y=0011$, fazer a subtração de $1x$ e $0y$ nos dá:
+Podemos comparar duas strins de bits $x$ e $y$ de tamanho $s$ com uma subtração.
+Para determinar se $x\geq y$, concatenamos um bit 1 ao início de $x$ e um 0 para
+$y$, depois fazemos a subtração dos valores. Por exemplo, para $s=4$, $x=1100$ e
+$y=0011$, fazer a subtração de $1x$ e $0y$ nos dá:
 
 \begin{figure}[h]
 \bf \Large \centering
@@ -86,7 +86,7 @@ $-$ & \textcolor{blue}{0}\textcolor{cyan}{0011} \\
 
 Se o valor do bit mais significativo no resultado é 1, então $x\geq y$. 
 
-Conseguimos estender essa ideia para comparar múltiplas \textit{bit strings}
+Conseguimos estender essa ideia para comparar múltiplas strings de bits
 simultaneamente. Se temos dois arrays $A$ e $B$, cada um com 4 números de 4
 bits:
 
@@ -192,7 +192,7 @@ chaves são $\leq q$, ou seja, seu rank.
 
 \textit{[Ladrilhamento paralelo? Blocagem? ]}
 
-Para obter uma palavra com múltiplas cópias de uma mesma \textit{bit string} $q$
+Para obter uma palavra com múltiplas cópias de uma mesma string de bits $q$
 interespaçadas por um bit, precisamos fazer uma multiplicação com um número
 específico que distribua $q$ igualmente. Por exemplo, para $q=1100$ e um tamanho
 de palavra de 20 bits, queremos obter:
@@ -382,8 +382,8 @@ da soma \textbf{\textcolor{Purple}{a}} $+$ \textbf{\textcolor{Purple}{b}} $+$
 
 Note que o multiplicador deve novamente espaçar os shifts no tamanho de $q+1$,
 como foi feito no \textbf{Parallel Tile}. A diferença é que lá esse shift era
-aplicado a uma \textit{bit-string} de tamanho $q$ e por isso ela era copiada
-repetidas vezes sem somar nada. Aqui, temos \textit{bit-strings} de tamanho
+aplicado a uma string de bits de tamanho $q$ e por isso ela era copiada
+repetidas vezes sem somar nada. Aqui, temos strings de bits de tamanho
 $\len(q)+1$, pois o bit sentinela já está incluso, assim o shift força a soma
 dos sentinela. No nosso exemplo, com uma palavra de tamanho 20, o multiplicador
 precisa ser $M=00001000010000100001$.
@@ -409,13 +409,12 @@ empilhar todos os bits de interesse em uma mesma soma.
 
 \subsection{Rank Paralelo}
 
-Com essas operações, conseguimos computar o rank de uma \textit{query} $q$ entre
-as chaves de um nó em tempo constante. Estamos supondo que $\len(q) = \len(x_i)$
+Com essas operações, conseguimos computar o rank de uma consulta $q$ entre as
+chaves de um nó em tempo constante. Estamos supondo que $\len(q) = \len(x_i)$
 onde $x_i$ é uma chave do nó. Além disso, para que tudo funcione, o tamanho
-dessas \textit{bit-strings} precisa ser muito menor que o tamanho da palavra
-$w$, de forma que todas as chaves $x_i$ de um nó cabem intercaladas por um bit
-em um array de tamanho $w$, para podermos realizar a \textbf{Comparação
-Paralela}.
+dessas strings de bits precisa ser muito menor que o tamanho da palavra $w$, de
+forma que todas as chaves $x_i$ de um nó cabem intercaladas por um bit em um
+array de tamanho $w$, para podermos realizar a \textbf{Comparação Paralela}.
 
 \textbf{Rank Paralelo}$(q)$
 
@@ -426,7 +425,7 @@ com um bit de espaço entre eles. Uma query $q$.
 
 \textbf{Procedimento:}
 \begin{itemize}
-    \item Realizar um \textbf{Parallel Tile} na \textit{query} $q$ para obter um
+    \item Realizar um \textbf{Parallel Tile} na consulta $q$ para obter um
     array com $n$ cópias de $q$ espaçadas por bits 1.
     \item Realizar uma \textbf{Comparação Paralela} entre o array de $q$ e $X$.
     \item Realizar uma \textbf{Soma Paralela} para obter o \textbf{rank}$(q)$.
@@ -456,9 +455,9 @@ cluster.
 
 Se vamos dividir $w$ em clusters de tamanho $b$, a questão é que valor de $b$
 minimiza o $\max \{b,\frac{w}{b}\}$? A resposta é $b=w^{1/2}$. Para identificar
-clusters não-vazios, vamos construir um bit-string com tamanho igual ao número
-de clusters, em que cada bit indica se aquele cluster está vazio ou não. Teremos
-uma estrutura como:
+clusters não-vazios, vamos construir uma string de bits com tamanho igual ao
+número de clusters, em que cada bit indica se aquele cluster está vazio ou não.
+Teremos uma estrutura como:
 
 \textit{[Como chegamos que $1/2$ minimiza a equação? - Falar isso na seção da vEB]}
 
@@ -530,17 +529,17 @@ uma estrutura como:
 \textit{[Figura copiada da parte da vEB, pensar se vale tentar construir uma estrutura diferente depois]}
 
 Como cada cluster tem tamanho $\sqrt w$, para determinar seu bit mais
-significativo, precisamos fazer um \textbf{rank} dos bits daquele cluster em
-relação a um array de $\sqrt w$ potências de 2. Cada uma dessas potências de 2
-ocupa $\sqrt{w}$ bits, mas para construir nosso array de \textbf{Comparação
-Paralela}, o bit que interespaça as potências vai acabar tornando o array final
-de tamanho maior que $w$. 
+significativo, precisamos fazer um rank dos bits daquele cluster em relação a um
+array de $\sqrt w$ potências de 2. Cada uma dessas potências de 2 ocupa
+$\sqrt{w}$ bits, mas para construir nosso array de \textbf{Comparação Paralela},
+o bit que interespaça as potências vai acabar tornando o array final de tamanho
+maior que $w$. 
 
 Nesse ponto, a questão se torna como podemos contornar esse problema. Uma
 possibilidade é dividir as potências de 2 em dois arrays diferentes e computar o
-\textbf{rank} duas vezes. Outra, é tratar o bit mais significativo como um caso
-especial, sobrando apenas $\sqrt{w}-1$ bits para comparar. De qualquer forma, o
-tempo constante para a operação se mantém.
+rank duas vezes. Outra, é tratar o bit mais significativo como um caso especial,
+sobrando apenas $\sqrt{w}-1$ bits para comparar. De qualquer forma, o tempo
+constante para a operação se mantém.
 
 \subsubsection{Identificando clusters não-vazios}
 
@@ -698,11 +697,12 @@ bitstring $R$ que informa se cada cluster de $X$ tem um bit 1 ou não:
 \end{tabular}
 \end{figure}
 
-Queremos, contudo, obter uma bit-string com apenas os bits de interesse. Para
-isso, vamos relembrar de como construímos a técnica da \textbf{Soma Paralela},
-fazendo uma multiplicação que gera shifts especificamente para empilhar os bits
-de interesse e somá-los ao final. A diferença é que agora nosso objetivo é
-concatenar esses bits, buscamos que nossa multiplicação faça algo da forma:
+Queremos, contudo, obter uma string de bits com apenas os bits de interesse.
+Para isso, vamos relembrar de como construímos a técnica da \textbf{Soma
+Paralela}, fazendo uma multiplicação que gera shifts especificamente para
+empilhar os bits de interesse e somá-los ao final. A diferença é que agora nosso
+objetivo é concatenar esses bits, buscamos que nossa multiplicação faça algo da
+forma:
 
 \begin{figure}[h]
 \bf \Large \centering
@@ -740,11 +740,11 @@ $+$ & \textcolor{PineGreen}{\phantom{000}1} &
 \end{tabular}
 \end{figure}
 
-A técnica para fazer isso se chama \textbf{Sketching} e será vista mais a fundo
+A técnica para fazer isso se chama \textit{Sketching} e será vista mais a fundo
 na próxima seção. Por ora, podemos ter a intuição que precisamos realizar shifts
 de tamanho igual ao número de bits que não nos interessam. Nesse caso, são 3
-bits, então simplesmente precisamos de uma \textit{bit-string} que tenha um bit
-1 na primeira posição e repetir um bit 1 a cada 3 bits, $M=001001001001$.
+bits, então simplesmente precisamos de uma string de bits que tenha um bit 1 na
+primeira posição e repetir um bit 1 a cada 3 bits, $M=001001001001$.
 
 Os bits que nos interessam estarão posicionados no cluster mais à esquerda da
 palavra original. Aplicamos uma máscara para zerar todos os outros bits e
@@ -763,9 +763,9 @@ para a ponta direita. Ao final, teremos como resultado:
 
 \subsubsection{Encontrar o primeiro cluster não-vazio}
 
-Para isso, precisamos obter o \textbf{rank} de $C$ em relação às potências de 2.
-Precisamos apenas da \textit{bit-string} que contém
-${2^0,2^1,\cdots,2^{\sqrt{w}-1}}$ separados por um bit 0 para a comparação:
+Para isso, precisamos obter o rank de $C$ em relação às potências de 2.
+Precisamos apenas da string de bits que contém ${2^0,2^1,\cdots,2^{\sqrt{w}-1}}$
+separados por um bit 0 para a comparação:
 
 \begin{figure}[h]
  \bf \Large\centering
@@ -780,22 +780,22 @@ ${2^0,2^1,\cdots,2^{\sqrt{w}-1}}$ separados por um bit 0 para a comparação:
   \end{tabular}
 \end{figure}
 
-Note que essa \textit{bit-string} tem tamanho $W=20$. Como já foi mencionado,
-os problemas de espaço para usar a técnica do \textbf{Rank Paralelo} são apenas uma
+Note que essa string de bits tem tamanho $W=20$. Como já foi mencionado, os
+problemas de espaço para usar a técnica do \textbf{Rank Paralelo} são apenas uma
 tecnicalidade para ser contornada, então vamos seguir mostrando a teoria como se
 pudessemos fazer as operações com uma palavra desse tamanho.
 
 Denominaremos o índice do primeiro cluster não vazio como $c$, lembrando que
-contamos os clusters da direita para a esquerda iniciando no índice 0. O
-\textbf{rank}$(C)$ em relação a $P$ será denominado $\textbf{rank}(P,C)$ e nos
-diz objetivamente o número de potências de 2 em $P$ menores ou iguais a $C$.
-Para obter o índice $c$ então, precisamos fazer a conta:
+contamos os clusters da direita para a esquerda iniciando no índice 0. O rank de
+$C$ em relação a $P$ será denominado $\textbf{rank}(P,C)$ e nos diz
+objetivamente o número de potências de 2 em $P$ menores ou iguais a $C$. Para
+obter o índice $c$ então, precisamos fazer a conta:
 \[
 c=\textbf{rank}(P,C)-1
 \]
 
-É evidente que, no nosso exemplo, o \textbf{rank} de $C$ é 4, então podemos
-concluir que o cluster 3 de $X$ não está vazio.
+É evidente que, no nosso exemplo, o rank de $C$ é 4, então podemos concluir que
+o cluster 3 de $X$ não está vazio.
 
 \textit{[Pensar numa notação para o \textbf{rank} em relação a $P$ em contraste
 com a definição anterior que fiz, em que o \textbf{rank}$(q)$ está atrelado
@@ -823,7 +823,7 @@ Para encontrar o primeiro bit 1, a mesma lógica se aplica.
 d=\textbf{rank}(P,X_3)-1
 \]
 
-Computando o \textbf{rank}$(X_3)$ em relação a $P$, encontramos o valor 3, e,
+Computando o rank de $(X_3)$ em relação a $P$, encontramos o valor 3, e,
 portanto, $d=2$. Por fim, obtemos o índice do primeiro bit setado de $X$ fazendo
 a conta:
 
@@ -912,7 +912,7 @@ que fizemos dessa forma:
 
 \begin{itemize}
     \item Identificar os clusters não-vazios de $X$, resultando na
-    \textbf{bit-string} $C$ de tamanho $\sqrt{w}$.
+    string de bits $C$ de tamanho $\sqrt{w}$.
     \item Encontrar o índice do primeiro cluster não vazio $c$, computando o
     \textbf{Rank Paralelo} de $C$ em relação às primeiras $\sqrt{w}$ potências
     de 2
@@ -925,10 +925,10 @@ que fizemos dessa forma:
 \section{Sketching}
 
 Vimos diversas técnicas muito poderosas para manipulação de bits que conseguem
-resultados impressionantes para pequenas \textit{bit-strings}, de tamanho muito
-menor que o tamanho da \textit{palavra} $w$. Precisamos tomar isso como fato
-para nos manter dentro do limite de tamanho em arrays com diversas chaves, como
-o construído para a \textbf{Comparação Paralela}, que ocupa espaço $O(w)$. 
+resultados impressionantes para pequenas strings de bits, de tamanho muito menor
+que o tamanho da \textit{palavra} $w$. Precisamos tomar isso como fato para nos
+manter dentro do limite de tamanho em arrays com diversas chaves, como o
+construído para a \textbf{Comparação Paralela}, que ocupa espaço $O(w)$. 
 
 Voltando para a Fusion Tree, nós queremos resolver o problema do predecessor em
 um universo em que todos os elementos são \textit{palavras} de tamanho $w$.
@@ -1048,15 +1048,15 @@ uma estrutura como na Figura~\ref{f:fusion-trie}.
 $x_0=010000,x_1=010001,x_2=010011$ e $x_3=011011$. Os nós de ramificação está na
 cor vermelha, e os bits importantes, que diferenciam as chaves, tem seu nível
 circulado. As chaves tem seus respectivos bits importantes destacados e
-comprimidos em um \textbf{sketch} logo embaixo.\label{f:fusion-trie}}
+comprimidos em um \textit{sketch} logo embaixo.\label{f:fusion-trie}}
 \end{figure}
 
 Destacamos em vermelho os nós de ramificação, que possuem 2 filhos. Note que,
 conseguimos diferenciar as chaves $x_0,x_1,x_2$ e $x_3$ apenas pelo valor do bit
 a seguir da ramificação, circulamos os níveis com esses bits. Se tomarmos apenas
-esses valores, sublinhados nas \textit{bit-strings} das folhas, obtemos o
-\textbf{sketch} de cada chave, logo abaixo na figura. Vale mencionar que os
-sketchs são todos distintos e preservam a ordem das chaves.
+esses valores, sublinhados nas strings de bits das folhas, obtemos o
+\textit{sketch} de cada chave, logo abaixo na figura. Vale mencionar que os
+sketches são todos distintos e preservam a ordem das chaves.
 
 De forma geral, para um nó da Fusion Tree, essa trie teria $k$ folhas e altura
 $w$, totalizando $k-1$ nós de ramificação. Como podemos ver, um mesmo nível pode
@@ -1070,8 +1070,8 @@ b_0<b_1<\dots <b_{r-1}
 onde $r<k$. No pior dos casos, temos um bit importante para cada chave do nó, ou
 seja, o número total desses bits é $rk = O(w^{2/5})$. 
 
-Um \textbf{sketch perfeito} de $x$ extrai apenas os bits $b_0,b_1,\dots,
-b_{r-1}$ de $x$. Dessa forma, o i-ésimo bit do \textbf{sketch}$(x)$ é o bit de
+Um \textit{sketch} perfeito de $x$ extrai apenas os bits $b_0,b_1,\dots,
+b_{r-1}$ de $x$. Dessa forma, o i-ésimo bit do \textit{sketch}$(x)$ é o bit de
 índice $b_i$ em $x$. Por exemplo, para nosso $x_2=010011$, temos a
 Figura~\ref{f:fusion-sketch}.
 
@@ -1119,13 +1119,13 @@ Essa operação pode ser feita em tempo constante, mais tarde vamos ver como.
 
 \subsection{Desketchifying}
 
-Problema: dada uma query $q$ queremos saber onde ela se encaixa entre as chaves
-$x_i$. Apenas com o \textbf{sketch} não conseguimos determinar seu
-sucessor/predecessor, pois os \textbf{sketchs} foram construídos para
+Problema: dada uma consulta $q$ queremos saber onde ela se encaixa entre as
+chaves $x_i$. Apenas com o \textit{sketch} não conseguimos determinar seu
+sucessor/predecessor, pois os \textbf{sketches} foram construídos para
 diferenciar apenas os $x_i$. A Figura~\ref{f:fusion-query-search} a seguir
 mostra uma trie completa para 4 bits. Os caminhos em azul com linhas mais
 grossas indicam as chaves $x_0=0000,x_1=0010,,x_2=1100$ e $x_3=1111$. Já o
-caminho verde tracejado é onde ficaria a query $q=0101$.
+caminho verde tracejado é onde ficaria a consulta $q=0101$.
 
 \begin{figure}[h]
 \centering
@@ -1252,28 +1252,28 @@ caminho verde tracejado é onde ficaria a query $q=0101$.
 Tree. O caminho para as chaves é mais grosso e em azul, enquanto o caminho para
 a consulta $q$ está tracejado em verde; Os níveis correspondentes aos bits
 importantes está circulado como antes, com os nós de ramificação destacados em
-vermelho. Aqui, os vizinhos do \textbf{sketch} de $q$ são $x_0$ e $x_1$, mas
+vermelho. Aqui, os vizinhos do \textit{sketch} de $q$ são $x_0$ e $x_1$, mas
 $x_0$ não é predecessor nem sucessor de $q$.\label{f:fusion-query-search}}
 \end{figure}
 
 Podemos visualizar que $q$ tem como predecessor $x_1$ e como sucessor $x_2$.
-Contudo, se compararmos apenas o \textbf{sketch}$(q)$ com os sketchs das chaves,
-vamos encontrar que seus vizinhos são $x_0$ e $x_1$.
+Contudo, se compararmos apenas o \textit{sketch}$(q)$ com os sketches das
+chaves, vamos encontrar que seus vizinhos são $x_0$ e $x_1$.
 
 \enlargethispage{-4\baselineskip}
 
-De forma geral, dada uma query $q$, vamos supor que conseguimos computar seu
-\textbf{Rank Paralelo} entre o \textbf{sketch} das chaves do nó, obtendo que
+De forma geral, dada uma consulta $q$, vamos supor que conseguimos computar seu
+\textbf{Rank Paralelo} entre o \textit{sketch} das chaves do nó, obtendo que
 $\textbf{sketch}(x_i)\leq \textbf{sketch}(q) \leq \textbf{sketch}(x_{i+1})$. Nós
 queremos descobrir aonde na árvore que o $q$ ``caiu'' da árvore azul, esse nó
 $n$ está marcado na Figura~\ref{f:fusion-query-search} e é o \textit{Lowest
 Common Ancestor} (LCA) entre a folha de $q$ e as folhas de $x_i$ e $x_{i+1}$.
 
-Na perspectiva dos bits, esse bit é o momento em que as \textit{bit-strings} de
-$q$ difere das de $x_i$ ou $x_{i+1}$. Definimos o \textbf{LCP}$(a,b)$
-(\textit{Longest Common Prefix}) como o tamanho da maior \textit{bit-string}
-igual em $a$ e $b$ desde o ínicio. Para o nosso exemplo, vamos comparar $q$ com
-$x_0$ e $x_{1}$ na Figura~\ref{f:fusion-lcp-query-keys}.
+Na perspectiva dos bits, esse bit é o momento em que as strings de bits de $q$
+difere das de $x_i$ ou $x_{i+1}$. Definimos o \textbf{LCP}$(a,b)$
+(\textit{Longest Common Prefix}) como o tamanho da maior string de bits igual em
+$a$ e $b$ desde o ínicio. Para o nosso exemplo, vamos comparar $q$ com $x_0$ e
+$x_{1}$ na Figura~\ref{f:fusion-lcp-query-keys}.
 
 \begin{figure}[!hbtp]
 \centering
@@ -1302,10 +1302,10 @@ Dadas duas \textit{palavras} $a$ e $b$ de tamanho $w$, conseguimos calcular o
 \textbf{LCP}$(a,b)$ em tempo constante utilizando a técnica do \textbf{MSB}
 vista anteriormente.
 
-Para isso, primeiro computamos $a$ \textbf{XOR} $b$, obtendo uma
-\textit{bit-string} $c$ em que os bits mais à esquerda são todos zeros, até que
-chegamos em um bit onde $a$ e $b$ são diferentes. A
-Figura~\ref{f:fusion-lcp-xor} mostra um exemplo disso:
+Para isso, primeiro computamos $a$ \textbf{XOR} $b$, obtendo uma string de bits
+$c$ em que os bits mais à esquerda são todos zeros, até que chegamos em um bit
+onde $a$ e $b$ são diferentes. A Figura~\ref{f:fusion-lcp-xor} mostra um exemplo
+disso:
 
 \begin{figure}[h]
 \centering
@@ -1320,7 +1320,7 @@ XOR & $b$ &
 & $c$ &
 \textcolor{black}{000000000}\textcolor{Orange}{1}\textcolor{gray}{010010}
 \end{tabular}
-} \caption{Operação de \textbf{XOR} entre duas \textit{bit-strings} $a$ e $b$. O
+} \caption{Operação de \textbf{XOR} entre duas strings de bits $a$ e $b$. O
 \textbf{LCP} entre elas está destacado em marrom, com o primeiro bit que as
 diferencia em azul e vermelho. O resultado do \textbf{XOR} é $c$, com os bits do
 \textbf{LCP} em preto e o primeiro bit diferente, o 1 mais à esquerda, em
@@ -1363,23 +1363,23 @@ determinar o predecessor ou sucessor, seguimos um método:
 
 Em ambos os casos, a busca pelo \textbf{sketch}$(e)$ vai encontrar com sucesso o
 predecessor ou sucessor de $q$. Após isso, o outro pode ser determinado
-simplesmente verificando o \textbf{sketch} adjacente no nó da Fusion.
+simplesmente verificando o \textit{sketch} adjacente no nó da Fusion.
 
 \subsection{Busca na Fusion Tree}
 
-Vamos definir por fim o algoritmo de busca por uma query $q$ no nó de uma Fusion
+Vamos definir por fim o algoritmo de busca por uma consulta $q$ no nó de uma Fusion
 Tree:
 
 \begin{itemize}
     \item Computamos \textbf{sketch}$(q)$
-    \item Encontramos seu \textbf{Rank Paralelo} entre os \textbf{sketchs} das
+    \item Encontramos seu \textbf{Rank Paralelo} entre os \textbf{sketches} das
     chaves, obtendo o índice $i$.
     \item Encontramos $y= \max\{\textbf{LCP}(q, x_i),\textbf{LCP}(q, x_{i+1})\}$
     \item Computamos $e$
     \item Encontramos o \textbf{Rank Paralelo} do \textbf{sketch}$(e)$ entre os
-    \textbf{sketchs} das chaves.
+    \textit{sketches} das chaves.
     \item O predecessor/sucessor do \textbf{sketch}$(e)$ entre os
-    \textbf{sketchs} é também o predecessor/sucessor de $q$ entre as chaves.
+    \textit{sketches} é também o predecessor/sucessor de $q$ entre as chaves.
 \end{itemize}
 
 Conseguimos assim encontrar em tempo $O(1)$ qual o galho que vamos descer desse
@@ -1388,28 +1388,27 @@ estejamos em uma folha, a resposta da busca.
 
 \section{Sketching Aproximado}
 
-A tarefa de computar um \textbf{sketch perfeito} não é tão simples. Para bits
+A tarefa de computar um \textit{sketch} perfeito não é tão simples. Para bits
 importantes perfeitamente espaçados, como em $C$ no cálculo do \textbf{MSB}, é
-intuitivo pensar no multiplicador adequado para obter o \textbf{sketch}.
+intuitivo pensar no multiplicador adequado para obter o \textit{sketch}.
 Contudo, no caso geral, as coisas são mais complicadas, os bits importantes
-estão espalhados de forma aleatória na \textit{bit-string}. A ideia será então
-espalhá-los em um padrão \textit{previsível}, independente da chave, de forma
-que o resultado final do \textbf{sketch aproximado} tenha tamanho $O(w^{4/5})$.
-Como temos $k=O(w^{1/5})$ chaves, nossos sketchs compactados em um único array
+estão espalhados de forma aleatória na string de bits. A ideia será então
+espalhá-los em um padrão \emph{previsível}, independente da chave, de forma que
+o resultado final do \textit{sketch} aproximado tenha tamanho $O(w^{4/5})$. Como
+temos $k=O(w^{1/5})$ chaves, nossos sketches compactados em um único array
 ocuparão espaço $O(w)$, nos permitindo fazer o \textbf{Rank Paralelo}.
 
-Vamos dizer que queremos computar o \textbf{sketch aproximado} de uma chave $x$.
+Vamos dizer que queremos computar o \textit{sketch} aproximado de uma chave $x$.
 Primeiro, aplicamos uma máscara para obter apenas os bits importantes de $x$,
-colocando os numa \textit{bit-string} $x'$. Suponha que temos uma
-\textit{bit-string} $B$ em que todo bit em índice $b_i$ é 1 e o restante é zero,
-isso é definido como
+colocando os numa string de bits $x'$. Suponha que temos uma string de bits $B$
+em que todo bit em índice $b_i$ é 1 e o restante é zero, isso é definido como
 \[
 B=\sum_{i=0}^{r-1}2^{b_i}.
 \]
 
-Essa \textit{bit-string} pode ser obtida simplesmente comparando todas as $k$
-chaves do nó entre si. Tomando um tempo $O(k^2)$, esse custo já está previsto no
-nosso pré-processamento polinomial.
+Essa string de bits pode ser obtida simplesmente comparando todas as $k$ chaves
+do nó entre si. Tomando um tempo $O(k^2)$, esse custo já está previsto no nosso
+pré-processamento polinomial.
 
 Com isso, a conta fica muito fácil, basta fazer $x \textbf{ AND } B$. A
 Figura~\ref{f:fusion-approx-sketch-and} mostra um exemplo para
@@ -1428,10 +1427,9 @@ AND & \textcolor{Red}{$B$} &
 & \textcolor{PineGreen}{$x'$} &
 \textcolor{YellowGreen}{00}\textcolor{PineGreen}{0}\textcolor{YellowGreen}{000}\textcolor{PineGreen}{1}\textcolor{YellowGreen}{00}\textcolor{PineGreen}{01}\textcolor{YellowGreen}{0000}\textcolor{PineGreen}{1}\textcolor{YellowGreen}{0}
 \end{tabular}
-} 
-\caption{Figura representando o resultado da operação \textbf{AND} entre uma
-chave $x$ e a \textit{bit-string} $B$, que tem apenas os bits de índice $b_i$,
-os bits importantes, setados. Os bits de índice de índice $b_i$ de $x$ estão em
+} \caption{Figura representando o resultado da operação \textbf{AND} entre uma
+chave $x$ e a string de bits $B$, que tem apenas os bits de índice $b_i$, os
+bits importantes, setados. Os bits de índice de índice $b_i$ de $x$ estão em
 verde escuro, enquanto os de $B$ estão em vermelho. O resultado, $x'$, preservou
 apenas os bits importantes de $x$.\label{f:fusion-approx-sketch-and}}
 \end{figure}
@@ -1578,24 +1576,24 @@ preservando apenas os bits importantes. Por fim, um shift para a direita em
 $b_0+m_0$ bits faz com que todos eles fiquem no intervalo de 0 a $O(r^4)$,
 cabendo enfim em uma palavra de tamanho $w$.
 
-Vale notar que, se quisermos na prática nos mantermos sempre dentro do tamanho de
-palavra $w$, precisamos realizar esse shift antes mesmo da multiplicação.
+Vale notar que, se quisermos na prática nos mantermos sempre dentro do tamanho
+de palavra $w$, precisamos realizar esse shift antes mesmo da multiplicação.
 Fazendo um shift de $b_0$ em $x'$ e de $m_0$ em $m$ nós garantimos que o
 resultado da multiplicação já ficará dentro dos limites de uma palavra.   
 
 \section{Concluindo a Fusion Tree}
 
-Com o \textbf{Sketching Aproximado}, conseguimos obter uma bit-string de tamanho
-$O(w^{4/5})$ contendo os bits importantes de uma chave $x$ em um padrão
-previsível. Um nó possui $k=O(w^{1/5}$ chaves e, portanto, conseguimos reunir
-seus sketchs aproximados em um array de tamanho $O(w)$. Isso permite realizar o
+Com o \textit{Sketching} Aproximado, conseguimos obter uma string de bits de
+tamanho $O(w^{4/5})$ contendo os bits importantes de uma chave $x$ em um padrão
+previsível. Um nó possui $k=O(w^{1/5})$ chaves e, portanto, conseguimos reunir
+seus sketches aproximados em um array de tamanho $O(w)$. Isso permite realizar o
 \textbf{Rank Paralelo} de uma consulta $q$ entre as chaves de um nó da Fusion
 Tree.
 
 Com a operação do \textbf{Rank Paralelo} garantida, a \textbf{Busca na Fusion
 Tree} foi descrita na seção 6.3, e com ela obtemos em $O(1)$ por qual subárvore
 vamos descer em cada nó da árvore. Relembrando, em uma Árvore B de ordem $b$ o
-custo para atravessar a árvore é dado por $O(f(b)\log_b n$, onde $f(b)$ é o
+custo para atravessar a árvore é dado por $O(f(b)\log_b n)$, onde $f(b)$ é o
 trabalho feito em cada nó. No nosso caso, $f(b)=O(1)$ e a ordem é $b=w^{1/5}$.
 
 Dessa forma, uma consulta de predecessor/sucessor na Fusion Tree leva tempo
