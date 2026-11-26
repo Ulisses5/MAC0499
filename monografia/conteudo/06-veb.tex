@@ -1,20 +1,24 @@
 %!TeX root=../monografia
 %("dica" para o editor de texto: este arquivo é parte de um documento maior)
 % para saber mais: https://tex.stackexchange.com/q/78101
-\chapter{VEB}
+\chapter{Árvores de van Emde Boas}
 \label{cap:veb}
 
-\section{Introdução e história}
+Neste capítulo, iremos descrever uma estrutura de dados hoje conhecida como \emph{árvore de van Emde Boas} (ou \emph{árvores vEB}), que resolve o problema do predecessor para entradas no universo $\{0, \ldots, u-1\}$ em tempo $O(\log \log u)$, mais rápido que árvores binárias de busca balanceadas se o número de elementos guardados na estrutura for suficientemente grande. 
 
-A estrutura foi inventada por um time liderado por Peter van Emde Boas em
-$1976$. Originalmente, a Árvore de van Emde Boas (vEB) é proposta como uma
-espécie de fila de prioridade melhorada, que usa o que eles chamam de ``árvores
-estratificada''. Aqui, vou descrever em mais detalhes outra versão da estrutura,
-com arrays [onde foi proposta pela primeira vez?], que consegue fazer as
-operações descritas anteriormente em tempo $O(\lg \lg u)$ com espaço
-$\Theta(u)$.
+\cite{vEB74} descreveu num relatório técnico uma versão inicial de tal estrutura; sua primeira publicação foi~\cite{vEB75}; ela foi originalmente chamada de \emph{árvore estratificada}.
+\cite{vEB77} forneceram implementações e refinamentos da estrutura.
 
-\textit{[falar do paper sobre o histórico feito pelo próprio van Emde Boas]}
+Por motivos históricos detalhados em~\cite{vEB13}, as implementações dos inventores da estrutura não utilizavam recursão e eram razoavelmente complexas.
+Em 1977, enquanto preparava a Seção 7.1 do seu clássico \emph{The Art of Computer Programming}, Donald Knuth leu os artigos acima e produziu uma formulação recursiva da estrutura\footnote{Na carta dirigida a van Emde Boas, Knuth escreveu a célebre frase ``Beware of bugs in the above program; I have proved it correct, not tried it.'', que se refere à sua implementação recursiva.
+Knuth decidiu por incluir árvores vEB na Seção 8, que ainda não foi publicada.}.
+A versão descrita nesse capítulo será uma variante, descrita em~\cite{NotasDemaine}, que se baseia fortemente na descrição de Knuth.
+
+As árvores vEB originais utilizavam espaço $\Theta(u)$, e nossa descrição também o fará.
+\mauricio{Seria ideal procurar por todas as ocorrências da palavra ``espaço'' e especificar se estamos falando de palavras ou bits.}
+Ao final, descreveremos sucintamente duas técnicas introduzidas em~\cite{vEBLinearSpace} que diminuem o consumo de memória para $\Theta(n)$, onde $n$ é o número de elementos guardados na estrutura.
+
+%(Mauricio): Uma versão anterior do parágrafo acima dava a entender que as árvores vEB originais "usavam" filas de prioridade, enquanto a versão que descrevemos usava arrays. Acredito que tenha sido uma confusão terminológica: As árvores vEB *são* filas de prioridade! Lembre-que uma fila de prioridade é qualquer estrutura que suporte acessar e remover o elemento de prioridade mínima (além de inserir elementos arbitrários). Assim, em alguns lugares, árvores vEB são descritas como "filas de prioridade de van Emde Boas".
 
 \section{Resolvendo o problema do predecessor}
 
@@ -824,3 +828,8 @@ Anotações feedback vEB:
     predecessor de um elemento no ultimo cluster (12,13,14,15))
     \item Mostrar as operações acontecendo por meio de figuras
 \end{itemize}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../monografia"
+%%% End:

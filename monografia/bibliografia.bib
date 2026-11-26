@@ -63,268 +63,75 @@
 % papers de seu interesse e, em um dado texto, citar apenas alguns deles.
 
 
-@book{eco:09,
- author     = {Umberto Eco},
- title      = {Como se Faz uma Tese},
- edition    = 22,
- publisher  = {Perspectiva},
- translator = {Gilson César Cardoso de Souza},
- year       = {2009},
- location   = {São Paulo},
- isbn       = {978-85-273-0079-7},
+@misc{vEB74,
+     title = {An O(nloglogn) On-line Algorithm for the Insert-Exact Min Problem},
+       url = {https://hdl.handle.net/1813/6060},
+    school = {Cornell University},
+    AUTHOR = {van Emde Boas, P.},
+      year = {1974},
+     month = Dec
 }
 
-@book{zobel:14,
- author    = {Justin Zobel},
- title     = {Writing for Computer Science},
- publisher = {Springer London},
- edition   = 3,
- year      = {2014},
- isbn      = {978-1-4471-6638-2},
- doi       = {10.1007/978-1-4471-6639-9},
+@incollection{vEB75,
+     TITLE = {Preserving order in a forest in less than logarithmic time},
+ BOOKTITLE = {16th {A}nnual {S}ymposium on {F}oundations of {C}omputer
+              {S}cience ({U}niv. {C}alifornia, {B}erkeley, {C}alif., 1975)},
+    AUTHOR = {van Emde Boas, P.},
+     PAGES = {75--84},
+ PUBLISHER = {IEEE, Long Beach, CA},
+      YEAR = {1975},
+   MRCLASS = {68A10 (05C30 90B10)},
+  MRNUMBER = {443421},
+MRREVIEWER = {Kurt\ Mehlhorn},
 }
 
-@book{waz:20,
- author    = {Raul S. Wazlawick},
- title     = {Metodologia de Pesquisa para Ciência da Computação},
- publisher = {GEN LTC},
- edition   = 3,
- year      = {2020},
- isbn      = {978-8595151093},
+@article{vEB77,
+    AUTHOR = {van Emde Boas, P. and Kaas, R. and Zijlstra, E.},
+     TITLE = {Design and implementation of an efficient priority queue},
+   JOURNAL = {Math. Systems Theory},
+  FJOURNAL = {Mathematical Systems Theory. An International Journal on
+              Mathematical Computing Theory},
+    VOLUME = {10},
+      YEAR = {1976/77},
+    NUMBER = {2},
+     PAGES = {99--127},
+      ISSN = {0025-5661},
+   MRCLASS = {68A20 (90B15)},
+  MRNUMBER = {431777},
+MRREVIEWER = {A.\ D.\ Booth},
+       DOI = {10.1007/BF01683268},
+       URL = {https://doi.org/10.1007/BF01683268},
 }
 
-@book{higham:19,
- author    = {Nicholas J. Higham},
- title     = {Handbook of Writing for the Mathematical Sciences},
- edition   = 3,
- publisher = {{SIAM: Society for Industrial and Applied Mathematics}},
- month     = dec,
- year      = {2019},
- isbn      = {978-1611976090},
+@techreport{vEB13,
+  author      = {van Emde Boas, Peter},
+  title       = {Thirty nine years of stratified trees},
+  institution = {Institute for Logic, Language and Computation, University of Amsterdam},
+  year        = {2013},
+  number      = {PP-2013-16},
+  type        = {ILLC Prepublication Series},
+  url         = {https://eprints.illc.uva.nl/id/eprint/488/}
 }
 
-@book{knuth:96,
- author    = {Donald E. Knuth and Tracy Larrabee and Paul M. Roberts},
- title     = {Mathematical Writing},
- publisher = {The Mathematical Association of America},
- month     = sep,
- year      = {1996},
- isbn      = {978-0883850633},
+@misc{NotasDemaine,
+  author       = {Demaine, Erik D.},
+  title        = {Aula 11: Integers \& {van Emde Boas}},
+  howpublished = {Notas de aula de 6.851: Estruturas de Dados Avançadas, MIT},
+  month        = mar,
+  year         = {2012},
+  url          = {https://courses.csail.mit.edu/6.851/spring21/lectures/L11.pdf}
 }
 
-@article{floats2014,
- author          = {Frank Mittelbach},
- title           = {How to influence the position of float environments
-                   like figure and table in \LaTeX?},
- journal         = {TUGboat},
- journalsubtitle = {Communications of the \TeX\ Users Group},
- volume          = {35},
- number          = {3},
- year            = 2014,
- url             = {tug.org/TUGboat/tb35-3/tb111mitt-float.pdf},
- urldate         = {2020-01-09},
- publisher       = {\TeX\ {Users} {Group}},
- address         = {Portland (OR), USA},
-}
-
-% O campo "year" é usado por bibtex; biblatex pode usar "year" ou "date"
-@manual{natbib,
- title   = {Reference sheet for \texttt{natbib} usage},
- author  = {Patrick W. Daly},
- year    = {2010},
- date    = {2010-09-13},
- urldate = {2018-12-20},
- url     = {mirrors.ctan.org/macros/latex/contrib/natbib/natnotes.pdf},
-}
-
-@manual{biblatex,
- title   = {The \texttt{biblatex} Package},
- author  = {Philip Kime and Moritz Wemheuer and Philipp Lehman},
- year    = 2024,
- date    = {2024-03-21},
- urldate = {2025-01-29},
- url     = {mirrors.ctan.org/macros/latex/contrib/biblatex/doc/biblatex.pdf},
-}
-
-@article{alon09:how,
- author    = {Uri Alon},
- title     = {How To Choose a Good Scientific Problem},
- journal   = {Molecular Cell},
- year      = {2009},
- volume    = {35},
- number    = {6},
- pages     = {726--728},
- publisher = {Cell Press},
- month     = sep,
- doi       = {10.1016/j.molcel.2009.09.013},
- pages     = {726--728},
- issn      = {1097-2765},
-}
-
-@book{tufte01:visualDisplay,
- author    = {Edward Tufte},
- title     = {The Visual Display of Quantitative Information},
- year      = {2001},
- edition   = 2,
- publisher = {Graphics Press},
- month     = may,
- isbn      = {978-1930824133},
- location  = {Cheshire CT},
-}
-
-@manual{usp:guidelines,
- author      = {{Universidade de São Paulo -- Sistema Integrado
-                de Bibliotecas}},
- shortauthor = {SIBiUSP},
- title       = {Diretrizes para Apresentação de
-                Dissertações e Teses da {USP}:
-                Documento Eletrônico e Impresso},
- year        = 2016,
- url         = {www.teses.usp.br/index.php?option=com_content&view=article&id=52&Itemid=67},
- urldate     = {2025-01-29},
-}
-
-@unpublished{carlis:09,
- author  = {John V. Carlis},
- title   = {Design: The Key to Writing (and Advising)
-            a One-Draft {Ph.D} Dissertation},
- year    = 2009,
- month   = oct,
- url     = {www-users.cs.umn.edu/~carlis/one-draft.pdf},
- urldate = {2017-11-10},
-}
-
-@book{craftresearch,
- author    = {Wayne C. Booth and Gregory G. Colomb and Joseph M. Williams
-              and Joseph Bizup and William T. FitzGerald},
- title     = {The Craft of Research},
- publisher = {The University of Chicago Press},
- year      = 2024,
- edition   = 5,
- isbn      = {978-0226826677},
-}
-
-@book{dissertjourney,
- author    = {Laura Hyatt and Carol M. Roberts},
- title     = {The Dissertation Journey},
- publisher = {Corwin Press},
- year      = 2023,
- edition   = 4,
- location  = {Thousand Oaks, CA},
- isbn      = {978-1071891285},
-}
-
-@online{gnu83,
- title   = {new {Unix} implementation},
- author  = {Richard Stallman},
- year    = 1983,
- month   = sep,
- url     = {www.gnu.org/gnu/initial-announcement.en.html},
- urldate = {2025-01-29},
-}
-
-@online{FSF,
- shortauthor = {FSF},
- title       = {{Free Software Foundation} website},
- year        = 2007,
- urldate     = {2010-01-30},
- url         = {www.gnu.org},
-}
-
-@manual{sbctemplate,
- author  = {Luciana P. Nedel and Rafael H. Bordini
-            and Flávio Rech Wagner and Jomi F. Hübner},
- title   = {Instructions for Authors of {SBC} Conferences
-            Papers and Abstracts},
- year    = 2017,
- url     = {www.sbc.org.br/documentos-da-sbc/category/169-templates-para-artigos-e-capitulos-de-livros},
- urldate = {2018-12-13},
-}
-
-@techReport{yoon23,
- author      = {Ana Y. F. de Lima and Fabio Kon},
- title       = {Impacts of the {COVID-19} pandemic on
-                the bicycle sharing system in {São Paulo}},
- institution = {Department of Computer Science, Institute of Mathematics
-                and Statistics, University of São Paulo},
- year        = {2023},
- month       = dec,
- number      = {RT-MAC-2023-01},
- url         = {interscity.org/assets/Technical_Report_Tembici_COVID.pdf},
-}
-
-@mastersThesis{shannon,
- author  = {Claude Elwood Shannon},
- title   = {A symbolic analysis of relay and switching circuits},
- school  = {Massachusetts Institute of Technology
-            -- Dept. of Electrical Engineering},
- address = {Cambridge MA},
- year    = 1940,
- url     = {hdl.handle.net/1721.1/11173},
-}
-
-@phdThesis{curie,
- author  = {Marie Curie},
- title   = {Recherches sur les substances radioactives},
- school  = {Faculté des Sciences de Paris},
- year    = 1903,
- month   = jun,
- url     = {catalogue.bnf.fr/ark:/12148/cb302919009},
- urldate = {2025-01-29},
-}
-
-@inCollection{gridpat,
- author    = {Raphael Yokoingawa de Camargo and Andrei Goldchleger
-              and Márcio Rodrigo de Freitas Carneiro and Fabio Kon},
- title     = {The {Grid} architectural pattern},
- subtitle  = {Leveraging Distributed Processing Capabilities},
- booktitle = {Pattern Languages of Program Design},
- series    = {Software patterns},
- number    = 5,
- editor    = {Dragos Manolescu and Markus Voelter and James Noble},
- year      = 2006,
- month     = apr,
- isbn      = {978-0321321947},
- publisher = {Addison-Wesley Professional},
-}
-
-@inProceedings{dbevolution,
- author    = {Nepomuceno, Pedro Ivo Siqueira and Braghetto, Kelly Rosa},
- title     = {Managing Semantic Evolutions in Semi-Structured Data},
- booktitle = {Database and Expert Systems Applications:
-              {DEXA} 2023 proceedings, part {I}},
- year      = {2023},
- month     = aug,
- series    = {Lecture Notes in Computer Science},
- volume    = {14146},
- isbn      = {978-3-031-39847-6},
- publisher = {Springer, Cham},
- location  = {Berlin, Heidelberg},
- doi       = {10.1007/978-3-031-39847-6_12},
- pages     = {179--185},
- venue     = {Penang, Malaysia},
- eventdate = {2023-08-28/2023-08-30},
-}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%% URLS DO SOFTWARE HERITAGE %%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-@online{soft-with-style,
-    author={{Sofware Heritage}},
-    title={Citing software with style},
-    url={www.softwareheritage.org/2020/05/26/citing-software-with-style/},
-    date={2020-05-26},
-}
-
-@softwareversion{mlh-archiver,
-  author = {Passos, Rafael and Pilone, Arthur and Mendes, Eduardo
-            and Tadokoro, David and Meirelles, Paulo},
-  organization = {University of São Paulo},
-  license = {GPL-3.0},
-  date = {2025-10-11},
-  repository = {https://github.com/linux-duks/Mailing-Lists-Archiver.git},
-  title = {Mailing Lists Archiver},
-  version = {1},
-  swhid = {swh:1:dir:9ba7404353ec9088d9e669dcc2455ecd902a0a75;origin=https://github.com/linux-duks/Mailing-Lists-Archiver;visit=swh:1:snp:5ebd4b2f7e9914ca6fece58bead6bcfd7b94e495;anchor=swh:1:rev:f98b97e004e5e4cf24cd8198d37c6233548c3ed3},
+@article{vEBLinearSpace,
+title = {Preserving order in a forest in less than logarithmic time and linear space},
+journal = {Information Processing Letters},
+volume = {6},
+number = {3},
+pages = {80-82},
+year = {1977},
+issn = {0020-0190},
+doi = {https://doi.org/10.1016/0020-0190(77)90031-X},
+url = {https://www.sciencedirect.com/science/article/pii/002001907790031X},
+author = {P. {van Emde Boas}},
+keywords = {Set-manipulation, trees, analysis of algorithms}
 }
