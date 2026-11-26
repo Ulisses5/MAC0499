@@ -4,55 +4,7 @@
 \chapter{VEB}
 \label{cap:veb}
 
-\section{Introdução}
-
-\subsection{Problema do predecessor}
-
-O problema do predecessor tem como objetivo manter um conjunto $S$ de $n$
-elementos de um universo $U$ sujeito às seguintes operações:
-\[
-\Predecessor(x) = \max \{y \in S \mid y < x \} 
-\]
-\[
-\Sucessor(x) = \min \{y \in S \mid y > x \}
-\]
-%(Mauricio): x \in U nas consultas também? Imagino que sim.
-
-No nosso caso, estamos interessados no problema dinâmico, que também suporta as
-operações de \textbf{Inserção}, para $x \in U$, e \textbf{Remoção}, para $x \in
-S$.
-
-Com uma Árvore Binária de Busca Balanceada (ABBB), conseguimos resolver o
-problema com custo $\Theta (\lg n)$ para as operações e ocupando espaço $\Theta
-(n)$.
-%(Mauricio): Aqui você já está supondo Word RAM, visto que está considerando que os ponteiros de uma AABB têm tamanho O(1) cada.
-No modelo clássico baseado em comparações, as únicas operações entre os valores
-dos elementos são de comparação (como $\geq, =, \leq$) e nele uma ABBB é
-assintoticamente ótima.
-
-\subsection{Modelo Word RAM}
-
-Vamos usar o modelo \textbf{word RAM} (Random Access Machine), definido por
-Fredman e Willard em 1983 [conferir veracidade]. Nele, a memória é dividida em
-\textit{palavras} com tamanho de $w$ bits. Assim, todos os elementos são
-inteiros de $w$ bits e definimos um universo finito $U=\{0,1,\dots,u-1\}$, com
-$u=2^w$.  
-
-As operações aritméticas e lógicas entre elementos são executadas em tempo
-constante:
-\[+, -, *, /,\%,<<,>>,\&,|,\geq,=,\leq\]
-
-Além disso, temos que $w\geq \lg n$, caso contrário, nem seria possível
-representar o problema nesse modelo. [desenvolver]
-%(Mauricio): Acho que $n$ deveria ser $u$.
-
-Também vale notar que esse modelo já se aproxima da arquitetura real dos
-computadores hoje em dia. Atualmente, um sistema comum tem $64$ bits, ou seja,
-suportaria um universo de palavras de $0$ a $2^{64}$.
-
-\section{Árvore de van Emde Boas}
-
-\subsection{Introdução}
+\section{Introdução e história}
 
 A estrutura foi inventada por um time liderado por Peter van Emde Boas em
 $1976$. Originalmente, a Árvore de van Emde Boas (vEB) é proposta como uma
@@ -61,6 +13,12 @@ estratificada''. Aqui, vou descrever em mais detalhes outra versão da estrutura
 com arrays [onde foi proposta pela primeira vez?], que consegue fazer as
 operações descritas anteriormente em tempo $O(\lg \lg u)$ com espaço
 $\Theta(u)$.
+
+\textit{[falar do paper sobre o histórico feito pelo próprio van Emde Boas]}
+
+\section{Resolvendo o problema do predecessor}
+
+\subsection{Usando um vetor de bits}
 
 Uma ideia simples para lidar com o problema do predecessor seria construir um
 vetor de bits, isto é, um array com o mesmo tamanho do universo, $u$, e para
@@ -79,7 +37,9 @@ um universo com $u=16$. \label{f:veb-bit-vector}}
 
 Isso é muito eficiente para consultar se um elemento $x$ pertence a $S$, pois
 basta checar o valor do array no índice $x$, em tempo constante. Contudo, para
-consultas de predecessor o custo de pior caso é linear, $O(u)$. 
+consultas de predecessor o custo de pior caso é linear, $O(u)$.
+
+\subsection{Construindo uma árvore em cima de um vetor de bits}
 
 Para melhorar isso, uma ideia simples é construir uma árvore binária em cima do
 vetor. Os elementos do vetor são as folhas e, de baixo para cima, definimos
@@ -202,6 +162,8 @@ varredura até a raíz e depois até uma folha, a complexidade desse algoritmo �
 $O(\lg u)$. Ela acaba sendo muito similar a uma ABBB comum para a maioria das
 operações.
 
+\subsection{Utilizando clusters}
+
 Agora, vamos expandir isso para integrar ao conceito de clusters. Podemos dizer,
 que cada um dos nós da árvore define um cluster como sua subárvore, e seu valor
 nos diz se há elementos ou não naquele cluster. Os nós logo acima das folhas tem
@@ -313,77 +275,24 @@ Figura~\ref{f:veb-clusters-vector}.
 internos reunidos em um vetor.\label{f:veb-clusters-vector}}
 \end{figure}
 
-\textit{[meio feia essa figura, não sei se gostei]}
-
-A partir da raiz, conseguimos acessarmente direta o vetor de clusters. Com o
+A partir da raiz, conseguimos acessar diretamente o vetor de clusters. Com o
 índice do cluster de interesse, podemos obter a informação se ele está vazio ou
-não instantaneamente. 
+não instantaneamente.
 
-Vamos nos aprofundar nessa divisão mais tarde, antes vamos ver como isso nos
-permite definir um sistema de coordenadas hierárquico. Nele, um elemento $x \in
-U$ pode ser escrito da forma $x=c\sqrt u + i$, ou seja, estamos dividindo $x$
-por $\sqrt u$, e temos o $c$ como quociente e $i$ como resto. Podemos obter os
-valores de $c$ e $i$ com algumas contas:
-\[
-c = \left \lfloor \frac{x}{\sqrt u} \right \rfloor 
-\]
-\[
-i = x \mod \sqrt u
-\]
+Uma forma de obter o índice do cluster desejado, é notar a forma como essa
+divisão é construída. Temos um universo de tamanho $u$ e o dividimos pela sua
+raiz quadrada para obter $\sqrt{u}$ clusters. Um inteiro qualquer $x \in U$,
+também pode ser divido por $\sqrt{u}$. Vamos definir que, nessa divisão, obtemos
+$c$ como quociente e $i$ como resto. O elemento $x$ pode então ser representado
+como $x=c\sqrt{u}+i$. Isso significa que o índice do cluster que $x$ pertence é
+$c$. E dentro desse cluster, o índice do elemento com $x$ é $i$. 
 
-É interessante pensar também na perspectiva binária, pois as operações com bits
-em um computador real são feitas muito mais rápidas que as de divisão. Por conta
-disso, é com essas operações que a implementação da vEB será feita. 
-
-Temos que $x$ é uma palavra de $w$ bits e $u= 2^w$, assim $\sqrt u = \sqrt{2^w}
-= 2^{\frac{w}{2}}$. Ou seja, dividir $x$ por $\sqrt u$ na realidade é fazer um
-bit-shift de $\frac{w}{2}$ bits. Podemos visualizar isso com um exemplo simples,
-com $w=4$ e $x=11$. A representação dos bits de $x$ é dada pela
-Figura~\ref{f:veb-hierarch-coords}.
-
-\begin{figure}[h]
-\centering
-\begin{tikzpicture}
-
-    % 1. Bits de x
-    \def\bitvals{1,0,1,1}
-    \foreach \val [count=\i from 0] in \bitvals {
-        \node[array cell] (x\i) at ($(0,0) + (\i*0.55, 0)$) {\val};
-    }
-    \node[left=0.2cm of x0] {$x$};
-    
-    % 2. Braces (chaves) definindo c e i
-    \draw[cluster brace] (x0.north west) -- (x1.north east) 
-        node[midway, above=4pt] (b0) {};
-    \draw[cluster brace] (x2.north west) -- (x3.north east) 
-        node[midway, above=4pt] (b1) {};
-
-    % Rotulos
-    \node[above right=0pt and -10pt of b0, font=\small] {$c$};
-    \node[above right=0pt and -10pt of b1, font=\small] {$i$};
-
-\end{tikzpicture}
-\caption{O elemento $x=11$ na sua representação como string de bits, $1011$.
-Seus 2 bits mais à esquerda são $c$, enquanto $i$ é dado pelos mais à
-direita.\label{f:veb-hierarch-coords}}
-\end{figure}
-
-Em termos de operações fazemos:
-\begin{align*}
-c & = x >> w/2 \\
-i & = x \And ((1 << w/2)-1) \\
-x & = (c << w/2) | i
-\end{align*}
-
-Adotamos a partir daqui a notação $x=\langle c,i \rangle$ para representar a
-chamada de funções que realizam essas operações para obter algum dos elementos.
-Todas são feitas em tempo constante.                        
-
-Vamos voltar para a nossa estrutura que constrói uma árvore em cima do vetor de
-bits de grau fixo $\sqrt u$. Essa divisão nos dá $\sqrt u$ clusters de tamanho
-$\sqrt u$. Seguindo com nosso exemplo, temos $\sqrt u = w = 4$ e
-$S=\{2,3,5,7,11\}$. A Figura~\ref{f:veb-clusters-vector-x} para melhor
-visualização oculta o nó raiz.
+Vamos observar melhor isso com um exemplo prático, seguindo o que estávamos
+vendo com $u=16$ vamos focar no elemento $x=11$. Fazendo a divisão por
+$\sqrt{16}=4$ obtemos que $c=2$ e $i=3$, pois $11=2\sqrt{16}+2$. Então, $x$
+pertence ao cluster $2$, e dentro desse cluster seu índice é $3$. A
+Figura~\ref{f:veb-clusters-vector-x} mostra isso, ocultando o nó raiz para
+melhor visualização dos índices.
 
 \begin{figure}[h]
 \centering
@@ -444,13 +353,72 @@ do cluster, índice $x=11$ em $A$, é destacado em
 rosa.\label{f:veb-clusters-vector-x}}
 \end{figure}
 
-Destacamos que o sistema hierárquico de coordenadas consegue localizar o
-elemento $x=11$ de forma simples. Como $x=c\times \sqrt{16} + i$, obtemos que
-$c=2$ e $i=3$. Ou seja, $x$ está no cluster $2$, destacado em roxo, e, dentro
-desse cluster, possui índice $3$, esse elemento em rosa na figura. 
+O cluster de $x$, $c=2$ está destacado em roxo. Esse cluster consiste dos
+elementos de índice $9$ a $11$ no vetor de bits $A$. Olhando para esse cluster
+separadamente, seus elementos são indexados de $0$ a $3$. O índice de $x=11$ em
+$A$ obviamente é $11$. Portanto, o índice dentro do cluster é $i=3$.
 
-Conseguimos então, armazenar a representação binária de $x=1011$ em duas
-palavras de tamanho $w/2$, pois $c=10$ e $i=11$.
+Essa divisão do universo em $\sqrt{u}$ nos permite definir um sistema de
+coordenadas hierárquico. Nele, qualquer elemento $x \in U$ pode ser escrito da
+forma $x=c\sqrt u + i$, que já vimos. Podemos obter os valores de $c$ e $i$ com
+algumas contas:
+\[
+c = \left \lfloor \frac{x}{\sqrt u} \right \rfloor 
+\]
+\[
+i = x \% \sqrt u
+\]
+
+É interessante pensar também na perspectiva binária, pois as operações com bits
+em um computador real são feitas muito mais rápido que as de divisão. Por conta
+disso, é com essas operações que a implementação real da vEB será feita. 
+
+Temos que $x$ é uma palavra de $w$ bits e $u= 2^w$, assim $\sqrt u = \sqrt{2^w}
+= 2^{\frac{w}{2}}$. Ou seja, dividir $x$ por $\sqrt u$ na realidade é fazer um
+bit-shift de $\frac{w}{2}$ bits. Podemos visualizar isso com um exemplo simples,
+com $w=4$ e $x=11$. A representação dos bits de $x$ é dada pela
+Figura~\ref{f:veb-hierarch-coords}.
+
+\begin{figure}[h]
+\centering
+\begin{tikzpicture}
+
+    % 1. Bits de x
+    \def\bitvals{1,0,1,1}
+    \foreach \val [count=\i from 0] in \bitvals {
+        \node[array cell] (x\i) at ($(0,0) + (\i*0.55, 0)$) {\val};
+    }
+    \node[left=0.2cm of x0] {$x$};
+    
+    % 2. Braces (chaves) definindo c e i
+    \draw[cluster brace] (x0.north west) -- (x1.north east) 
+        node[midway, above=4pt] (b0) {};
+    \draw[cluster brace] (x2.north west) -- (x3.north east) 
+        node[midway, above=4pt] (b1) {};
+
+    % Rotulos
+    \node[above right=0pt and -10pt of b0, font=\small] {$c$};
+    \node[above right=0pt and -10pt of b1, font=\small] {$i$};
+
+\end{tikzpicture}
+\caption{O elemento $x=11$ na sua representação como string de bits, $1011$.
+Seus 2 bits mais à esquerda são $c$, enquanto $i$ é dado pelos mais à
+direita.\label{f:veb-hierarch-coords}}
+\end{figure}
+
+Em termos de operações fazemos:
+\begin{align*}
+c & = x >> w/2 \\
+i & = x \And ((1 << w/2)-1) \\
+x & = (c << w/2) | i
+\end{align*}
+
+Adotamos a partir daqui a notação $x=\langle c,i \rangle$ para representar a
+chamada de funções que realizam essas operações para obter algum dos elementos.
+Todas são feitas em tempo constante.    
+
+Conseguimos então, armazenar a representação binária de $x_2=1011$ em duas
+palavras de tamanho $w/2$, pois $c_2=10$ e $i_2=11$.
 
 % ==============================================================================
 % FIGURA 2: Decomposição vEB (Summary, Clusters e Braces)
@@ -516,6 +484,8 @@ Essa rotina simples é mais eficiente que o vetor de bits, mas cada passo dela
 custa $O(\sqrt{u})$, então ela ainda é pior que aquela árvore binária que
 construímos antes. 
 
+\subsection{Fazendo recursão}
+
 Para melhorar isso, podemos expandir essa ideia recursivamente. Nossa estrutura
 vEB terá $\sqrt{u}$ clusters e um sumário, e eles serão também estruturas vEB
 contendo clusters e sumários.
@@ -524,10 +494,10 @@ No momento, uma árvore vEB denominada $V$ de tamanho $u$ com tamanho de
 \textit{palavra} $w$ contém:
 
 \begin{itemize}
-\item $V.clusters:$ Array de $\sqrt u$ Árvores vEBs de tamanho $\sqrt u$ com
-tamanho de \textit{palavra} $\frac{w}{2}$. 
-\item $V.summary:$ Árvore vEB de tamanho $\sqrt{u}$ com tamanho de palavra
-$\frac{w}{2}$
+\item $\attrib{V}{clusters}$: Array de $\sqrt u$ Árvores vEBs de tamanho $\sqrt
+u$ com tamanho de \textit{palavra} $\frac{w}{2}$. 
+\item $\attrib{V}{summary}$: Árvore vEB de tamanho $\sqrt{u}$ com tamanho de
+palavra $\frac{w}{2}$
 \end{itemize}
 
 O Programa~\ref{p:veb-first-predecessor} aplica um algoritmo para encontrar o
@@ -542,10 +512,10 @@ predecessor recursivamente, seguindo a ideia da rotina anterior.
     specialidentifiers={},
   ]
     Function Predecessor$(V, x=\langle c,i \rangle)$
-        $i$ := Predecessor$(V.cluster[c], i)$
+        $i$ := Predecessor$(\attrib{V}{cluster}$[c], i)$
         if $i$ == $-\infty$
-            $c$ := Predecessor$(V.summary, c)$
-            $i$ := Predecessor$(V.cluster[c], +\infty)$
+            $c$ := Predecessor$(\attrib{V}{summary}, c)$
+            $i$ := Predecessor$(\attrib{V}{cluster}[c], +\infty)$
         return $\langle c,i \rangle$
   \end{lstlisting}
 \end{programruledcaption}
@@ -562,8 +532,8 @@ Programa~\ref{p:veb-first-insert}
     specialidentifiers={},
   ]
     Function Inserir$(V,x=\langle c,i\rangle)$
-        Inserir$(V.summary, c)$
-        Inserir$(V.cluster[c], i)$
+        Inserir$(\attrib{V}{summary}, c)$
+        Inserir$(\attrib{V}{cluster}[c], i)$
   \end{lstlisting}
 \end{programruledcaption}
 
@@ -586,11 +556,11 @@ gostaríamos, porque no pior caso fazemos três chamadas recursivas de
 $\Predecessor$.
 
 A chamada na linha 4 pode ser traduzida como buscar o maior elemento dentro de
-um cluster. Se nós armazenamos isso de antemão, com um elemento \textit{max},
+um cluster. Se nós armazenamos isso de antemão, com um elemento \var{max},
 reduzimos para apenas 2 chamadas recursivas no
 Programa~\ref{p:veb-predecessor-max}
 
-\begin{programruledcaption}{Função predecessor recursiva com \emph{max} \label{p:veb-predecessor-max}}
+\begin{programruledcaption}{Função predecessor recursiva com \var{max} \label{p:veb-predecessor-max}}
   \begin{lstlisting}[
     language=pseudocode,
     style=pseudocode,
@@ -599,10 +569,10 @@ Programa~\ref{p:veb-predecessor-max}
     specialidentifiers={},
   ]
     Function Predecessor$(V, x=\langle c,i \rangle)$
-        $i$ := Predecessor$(V.cluster[c], i)$
+        $i$ := Predecessor$(\attrib{V}{cluster}[c], i)$
         if $i$ == $-\infty$
-            $c$ := Predecessor$(V.summary, c)$
-            $i$ := $V.cluster[c].max$
+            $c$ := Predecessor$(\attrib{V}{summary}, c)$
+            $i$ := $\attrib{\attrib{V}{cluster}[c]}{max}$
         return $\langle c,i \rangle$
   \end{lstlisting}
 \end{programruledcaption}
@@ -612,13 +582,14 @@ então buscamos pelo predecessor desse cluster na estrutura de sumário.
 Gostaríamos poder já saber antes se essa busca dentro do cluster $c$ terá
 sucesso, pois caso contrário podemos pular essa chamada e ir direto para a
 outra. A maneira mais intuitiva de fazer isso é armazenando também o elemento
-mínimo de cada estrutura. Se $i$ for maior que $V.cluster[c].min$, então a busca
-dentro do cluster deve ser realizada pois encontraremos o predecessor lá. Caso
-contrário, podemos partir para a busca de outro cluster, sem precisar varrer
-$c$. O algoritmo de predecessor então fica da forma apresentada no
+mínimo de cada estrutura. Se $i$ for maior que
+$\attrib{\attrib{V}{cluster}[c]}{min}$, então a busca dentro do cluster deve ser
+realizada pois encontraremos o predecessor lá. Caso contrário, podemos partir
+para a busca de outro cluster, sem precisar varrer $c$. O algoritmo de
+predecessor então fica da forma apresentada no
 Programa~\ref{p:veb-predecessor-min-max}
 
-\begin{programruledcaption}{Função predecessor recursiva com \emph{min} e \emph{max}\label{p:veb-predecessor-min-max}}
+\begin{programruledcaption}{Função predecessor recursiva com \var{min} e \var{max}\label{p:veb-predecessor-min-max}}
   \begin{lstlisting}[
     language=pseudocode,
     style=pseudocode,
@@ -627,11 +598,11 @@ Programa~\ref{p:veb-predecessor-min-max}
     specialidentifiers={},
   ]
     Function Predecessor$(V, x=\langle c,i \rangle)$
-        if $i$ > $V.cluster[c].min$
-            $i$ := Predecessor$(V.cluster[c], i)$
+        if $i$ > $\attrib{\attrib{V}{cluster}[c]}{min}$
+            $i$ := Predecessor$(\attrib{V}{cluster}[c], i)$
         else
-            $c$ := Predecessor$(V.summary, c)$
-            $i$ := $V.cluster[c].max$
+            $c$ := Predecessor$(\attrib{V}{summary}, c)$
+            $i$ := $\attrib{\attrib{V}{cluster}[c]}{max}$
         return $\langle c,i \rangle$
   \end{lstlisting}
 \end{programruledcaption}
@@ -655,7 +626,7 @@ Com essa adição, o algoritmo de inserção ainda permanece com a mesma
 complexidade, apenas mantendo registro do mínimo e máximo. O
 Programa~\ref{p:veb-insert-min-max} aplica esse algoritmo.
 
-\begin{programruledcaption}{Função recursiva de inserção com \emph{min} e \emph{max} \label{p:veb-insert-min-max}}
+\begin{programruledcaption}{Função recursiva de inserção com \var{min} e \var{max} \label{p:veb-insert-min-max}}
   \begin{lstlisting}[
     language=pseudocode,
     style=pseudocode,
@@ -664,24 +635,26 @@ Programa~\ref{p:veb-insert-min-max} aplica esse algoritmo.
     specialidentifiers={},
   ]
     Function Inserir$(V,x=\langle c,i\rangle)$
-        if $x$ < $V.min$
-            $V.min$ := $x$
-        if $x$ > $V.max$
-            $V.max$ := $x$
-        Inserir$(V.summary, c)$
-        Inserir$(V.cluster[c], i)$
+        if $x$ < $\attrib{V}{min}$
+            $\attrib{V}{min}$ := $x$
+        if $x$ > $\attrib{V}{max}$
+            $\attrib{V}{max}$ := $x$
+        Inserir$(\attrib{V}{summary}, c)$
+        Inserir$(\attrib{V}{cluster}[c], i)$
   \end{lstlisting}
 \end{programruledcaption}
+
+\subsection{Separando o \var{min} da estrutura}
 
 Para também obtermos a complexidade de $O(\lg \lg u)$ na inserção, queremos
 poder fazer apenas uma das chamadas recursivas também. Note que a inserção na
 estrutura de sumário que fazemos na linha 5 só é necessária quando o primeiro
 elemento daquele cluster é inserido. A ideia é que nesse caso podemos fazer
 apenas essa inserção, e não inserimos o elemento recursivamente no cluster,
-apenas o salvamos a parte. O elemento escolhido para isso será o \textit{min},
-que também servirá como indicativo se um cluster está vazio ou não. As funções
-\textsc{empty}$(V)$ e \textsc{NotEmpty}$(V)$ vão retornar se $V.min$ tem o valor
-especial $none$ ou não. 
+apenas o salvamos a parte. O elemento escolhido para isso será o \var{min}, que
+também servirá como indicativo se um cluster está vazio ou não. As funções
+\texttt{Empty}$(V)$ e \texttt{NotEmpty}$(V)$ vão retornar se $\attrib{V}{min}$
+tem o valor especial $none$ ou não. 
 
 O algoritmo fica da forma do Programa~\ref{p:veb-final-insert}.
 
@@ -694,31 +667,31 @@ O algoritmo fica da forma do Programa~\ref{p:veb-final-insert}.
     specialidentifiers={},
   ]
     Function Inserir$(V,x=\langle c,i\rangle)$
-        if $V.min$ = none
-            $V.min$ := $V.max$ := $x$
+        if $\attrib{V}{min}$ = none
+            $\attrib{V}{min}$ := $\attrib{V}{max}$ := $x$
             return
-        if $x$ <= $V.min$
-            \func{Swap}$(x,V.min)$
-        if $x$ > $V.max$
-            $V.max$ := $x$
-        if \func{Empty}$(V.cluster[c])$
-            Inserir$(V.summary, c)$
-        Inserir$(V.cluster[c], i)$
+        if $x$ <= $\attrib{V}{min}$
+            \func{Swap}$(x,\attrib{V}{min})$
+        if $x$ > $\attrib{V}{max}$
+            $\attrib{V}{max}$ := $x$
+        if \func{Empty}$(\attrib{V}{cluster}[c])$
+            Inserir$(\attrib{V}{summary}, c)$
+        Inserir$(\attrib{V}{cluster}[c], i)$
   \end{lstlisting}
 \end{programruledcaption}
 
 Se a estrutura está vazia no caso base da primeira linha, apenas salvamos $x$
-como o \textit{min} (e o \textit{max}) e retornamos sem mais chamadas. Então,
-quando é feita a chamada na linha 8 de custo $O(\lg \lg u)$, sabemos que a
-chamada da linha 10 terá custo constante pois cairá nesse caso. Assim, a
-complexidade obtida é $O(\lg \lg u)$.
+como o \var{min} (e o \var{max}) e retornamos sem mais chamadas. Então, quando é
+feita a chamada na linha 8 de custo $O(\lg \lg u)$, sabemos que a chamada da
+linha 10 terá custo constante pois cairá nesse caso. Assim, a complexidade
+obtida é $O(\lg \lg u)$.
 
 Vale notar que no caso da linha 4, o elemento que queremos inserir é menor que o
-\textit{min} e, portanto, precisamos inserir o antigo \textit{min} na estrutura,
-então é feito um \textit{swap} entre os valores.  
+\var{min} e, portanto, precisamos inserir o antigo \var{min} na estrutura, então
+é feito um \textit{swap} entre os valores.  
 
 Com essas mudanças, precisamos fazer pequenas alterações no nosso código que
-calcula o predecessor para lidar com o caso especial do \textit{min} e das
+calcula o predecessor para lidar com o caso especial do \var{min} e das
 estruturas vazias, resultando no Programa~\ref{p:veb-final-predecessor}
 
 \begin{programruledcaption}{Função predecessor recursiva com \emph{lazy min} \label{p:veb-final-predecessor}}
@@ -730,13 +703,13 @@ estruturas vazias, resultando no Programa~\ref{p:veb-final-predecessor}
     specialidentifiers={},
   ]
     Function Predecessor$(V, x=\langle c,i \rangle)$
-        if $x$ <= $V.min$
+        if $x$ <= $\attrib{V}{min}$
             return null
-        if \func{NotEmpty}$(V.cluster[c])$ and $i$ > $V.cluster[c].min$
-            return $\langle c,$ Predecessor$(V.cluster[c], i) \rangle$
+        if \func{NotEmpty}$(\attrib{V}{cluster}[c])$ and $i$ > $\attrib{\attrib{V}{cluster}[c]}{min}$
+            return $\langle c,$ Predecessor$(\attrib{V}{cluster}[c], i) \rangle$
         else
-            $c'$ := Predecessor$(V.summary, c)$
-            return $\langle c',V.cluster[c'].max \rangle$
+            $c'$ := Predecessor$(\attrib{V}{summary}, c)$
+            return $\langle c',\attrib{\attrib{V}{cluster}[c']}{max} \rangle$
   \end{lstlisting}
 \end{programruledcaption}
 
@@ -745,12 +718,12 @@ estruturas vazias, resultando no Programa~\ref{p:veb-final-predecessor}
 Por fim, a estrutura final de uma árvore vEB denominada $V$ de tamanho $u$ com
 tamanho de \textit{palavra} $w$ contém:
 \begin{itemize}
-\item $V.min:$ Palavra armazenada pela árvore em si.
-\item $V.clusters:$ Array de $\sqrt u$ Árvores vEBs de tamanho $\sqrt u$ com
-tamanho de \textit{palavra} $\frac{w}{2}$. 
-\item $V.summary:$ Árvore vEB de tamanho $\sqrt{u}$ com tamanho de palavra
-$\frac{w}{2}$
-\item $V.max:$ Cópia do elemento máximo da árvore
+\item $\attrib{V}{min}:$ Palavra armazenada pela árvore em si.
+\item $\attrib{V}{clusters}$: Array de $\sqrt u$ Árvores vEBs de tamanho $\sqrt
+u$ com tamanho de \textit{palavra} $\frac{w}{2}$. 
+\item $\attrib{V}{summary}$: Árvore vEB de tamanho $\sqrt{u}$ com tamanho de
+palavra $\frac{w}{2}$
+\item $\attrib{V}{max}:$ Cópia do elemento máximo da árvore
 \end{itemize}
 
 Pseudocódigo das operações:
@@ -764,13 +737,13 @@ Pseudocódigo das operações:
     specialidentifiers={},
   ]
     Function Predecessor$(V, x=\langle c,i \rangle)$
-        if $x$ <= $V.min$
+        if $x$ <= $\attrib{V}{min}$
             return null
-        if \func{NotEmpty}$(V.cluster[c])$ and $i$ > $V.cluster[c].min$
-            return $\langle c,$ Predecessor$(V.cluster[c], i) \rangle$
+        if \func{NotEmpty}$(\attrib{V}{cluster}[c])$ and $i$ > $\attrib{\attrib{V}{cluster}[c]}{min}$
+            return $\langle c,$ Predecessor$(\attrib{V}{cluster}[c], i) \rangle$
         else
-            $c'$ := Predecessor$(V.summary, c)$
-            return $\langle c',V.cluster[c'].max \rangle$
+            $c'$ := Predecessor$(\attrib{V}{summary}, c)$
+            return $\langle c',\attrib{\attrib{V}{cluster}[c']}{max} \rangle$
   \end{lstlisting}
 \end{programruledcaption}
 
@@ -783,13 +756,13 @@ Pseudocódigo das operações:
     specialidentifiers={},
   ]
     Function Sucessor$(V, x=\langle c,i \rangle)$
-        if $x$ < $V.min$
-            return $V.min$
-        if \func{NotEmpty}$(V.cluster[c])$ and $i$ < $V.cluster[c].max$
-            return $\langle c,$ Sucessor$(V.cluster[c], i) \rangle$
+        if $x$ < $\attrib{V}{min}$
+            return $\attrib{V}{min}$
+        if \func{NotEmpty}$(\attrib{V}{cluster}[c])$ and $i$ < $\attrib{\attrib{V}{cluster}[c]}{max}$
+            return $\langle c,$ Sucessor$(\attrib{V}{cluster}[c], i) \rangle$
         else
-            $c'$ := Sucessor$(V.summary, c)$
-            return $\langle c',V.cluster[c'].min \rangle$
+            $c'$ := Sucessor$(\attrib{V}{summary}, c)$
+            return $\langle c',\attrib{\attrib{V}{cluster}[c']}{min} \rangle$
   \end{lstlisting}
 \end{programruledcaption}
 
@@ -802,16 +775,16 @@ Pseudocódigo das operações:
     specialidentifiers={},
   ]
     Function Inserir$(V,x=\langle c,i\rangle)$
-        if $V.min$ = none
-            $V.min$ := $V.max$ := $x$
+        if $\attrib{V}{min}$ = none
+            $\attrib{V}{min}$ := $\attrib{V}{max}$ := $x$
             return
-        if $x$ <= $V.min$
-            \func{Swap}$(x,V.min)$
-        if $x$ > $V.max$
-            $V.max$ := $x$
-        if \func{Empty}$(V.cluster[c])$
-            Inserir$(V.summary, c)$
-        Inserir$(V.cluster[c], i)$
+        if $x$ <= $\attrib{V}{min}$
+            \func{Swap}$(x,\attrib{V}{min})$
+        if $x$ > $\attrib{V}{max}$
+            $\attrib{V}{max}$ := $x$
+        if \func{Empty}$(\attrib{V}{cluster}[c])$
+            Inserir$(\attrib{V}{summary}, c)$
+        Inserir$(\attrib{V}{cluster}[c], i)$
   \end{lstlisting}
 \end{programruledcaption}
 
@@ -824,20 +797,20 @@ Pseudocódigo das operações:
     specialidentifiers={},
   ]
     Function Remover$(V,x=\langle c,i\rangle)$
-        if $x$ = $V.min$
-            $c$ := $V.summary.min$
+        if $x$ = $\attrib{V}{min}$
+            $c$ := $\attrib{\attrib{V}{summary}}{min}$
             if $c$ = none 
-                $V.min$ := none
+                $\attrib{V}{min}$ := none
                 return
-            $x$ := $V.min$ := $\langle c, i = V.cluster[c].min \rangle$
-        Remover$(V.cluster[c],i)$
-        if $V.cluster[c].min$ = none
-            Remover$(V.summary,c)$
-        if $V.summary.min$ = none
-            $V.max$ := $V.min$
+            $x$ := $\attrib{V}{min}$ := $\langle c, i =\attrib{\attrib{V}{cluster}[c]}{min} \rangle$
+        Remover$(\attrib{V}{cluster}[c],i)$
+        if $\attrib{\attrib{V}{cluster}[c]}{min}$ = none
+            Remover$(\attrib{V}{summary},c)$
+        if $\attrib{\attrib{V}{summary}}{min}$ = none
+            $\attrib{V}{max}$ := $\attrib{V}{min}$
         else 
-            $c'$ := V.summary.max
-            $V.max$ := $\langle c', V.cluster[c'].max \rangle$
+            $c'$ := $\attrib{\attrib{V}{summary}}{max}$
+            $\attrib{V}{max}$ := $\langle c', \attrib{\attrib{V}{cluster}[c']}{max} \rangle$
   \end{lstlisting}
 \end{programruledcaption}
 

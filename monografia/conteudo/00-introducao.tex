@@ -1,0 +1,51 @@
+%!TeX root=../monografia
+%("dica" para o editor de texto: este arquivo é parte de um documento maior)
+% para saber mais: https://tex.stackexchange.com/q/78101
+\chapter{Introdução}
+\label{cap:introducao}
+
+\section{Introdução}
+
+\subsection{Problema do predecessor}
+
+O problema do predecessor tem como objetivo manter um conjunto $S$ de $n$
+elementos de um universo $U$ sujeito às seguintes operações:
+\[
+\Predecessor(x) = \max \{y \in S \mid y < x \} 
+\]
+\[
+\Sucessor(x) = \min \{y \in S \mid y > x \}
+\]
+%(Mauricio): x \in U nas consultas também? Imagino que sim.
+
+No nosso caso, estamos interessados no problema dinâmico, que também suporta as
+operações de \textbf{Inserção}, para $x \in U$, e \textbf{Remoção}, para $x \in
+S$.
+
+Com uma Árvore Binária de Busca Balanceada (ABBB), conseguimos resolver o
+problema com custo $\Theta (\lg n)$ para as operações e ocupando espaço $\Theta
+(n)$.
+%(Mauricio): Aqui você já está supondo Word RAM, visto que está considerando que os ponteiros de uma AABB têm tamanho O(1) cada.
+No modelo clássico baseado em comparações, as únicas operações entre os valores
+dos elementos são de comparação (como $\geq, =, \leq$) e nele uma ABBB é
+assintoticamente ótima.
+
+\subsection{Modelo Word RAM}
+
+Vamos usar o modelo \textbf{word RAM} (Random Access Machine), definido por
+Fredman e Willard em 1983 [conferir veracidade]. Nele, a memória é dividida em
+\textit{palavras} com tamanho de $w$ bits. Assim, todos os elementos são
+inteiros de $w$ bits e definimos um universo finito $U=\{0,1,\dots,u-1\}$, com
+$u=2^w$.  
+
+As operações aritméticas e lógicas entre elementos são executadas em tempo
+constante:
+\[+, -, *, /,\%,<<,>>,\&,|,\geq,=,\leq\]
+
+Além disso, temos que $w\geq \lg n$, caso contrário, nem seria possível
+representar o problema nesse modelo. [desenvolver]
+%(Mauricio): Acho que $n$ deveria ser $u$.
+
+Também vale notar que esse modelo já se aproxima da arquitetura real dos
+computadores hoje em dia. Atualmente, um sistema comum tem $64$ bits, ou seja,
+suportaria um universo de palavras de $0$ a $2^{64}$.
