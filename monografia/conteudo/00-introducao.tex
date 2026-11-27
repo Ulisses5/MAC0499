@@ -4,9 +4,95 @@
 \chapter{Introdução}
 \label{cap:introducao}
 
-\section{Introdução}
+Neste capítulo, vamos introduzir o conceito de modelos computacionais, focando
+no modelo escolhido para esse trabalho, o \textbf{word RAM}. Ademais, vamos
+caracterizar o problema do predecessor e o limite teórico da teoria da
+informação. 
 
-\subsection{Problema do predecessor}
+\section{Modelos computacionais}
+
+Um modelo computacional, como definido por~\cite{FM09}, descreve como uma função
+matemática é computada dada sua entrada. A teoria da complexidade estuda os
+aspectos ``práticos'' da computabilidade. Isso é, para uma função computável,
+ela busca responder quanto tempo e espaço será necessário para realizar a
+computação. Usar um modelo, permite estudar a performance de algoritmos
+independente de variações particulares da implementação e tecnologias.
+
+O modelo tradicional de computação usado no estudo de problemas como o de
+ordenação é o baseado em comparações. Nele, apenas as operações que comparam
+elementos são consideradas para obter a complexidade de um algoritmo. Para
+ordenar $n$ chaves nesse modelo, o custo é $\Theta(n \lg n)$. 
+
+\section{Modelo Word RAM}
+
+\cite{HT98} pontua que o modelo baseado em comparações é simples, fundamental e
+intelectualmente interessante, mas falha na interpretação de diversos algoritmos
+de sucesso e com usos práticos. Um deles é o \textit{Bucket Sort}, que ordena
+inteiros uniformemente distribuídos em tempo linear, usando eles como endereços
+para o \textit{``bucket''} que eles pertencem. Nenhuma comparação entre as
+chaves é feita e, portanto, ele não pode ser formulado no modelo baseado em
+comparações. Contudo, o algoritmo funciona perfeitamente em uma
+\textit{Random-Access Machine} (RAM).  
+
+\cite{PS80} mostraram que qualquer algoritmo no modelo RAM de custo unitário, no
+qual as operações incluem adição, subtração, multiplicação e comparação com
+zero, toma tempo $\Omega(n \lg n)$ para ordenar $n$ números no pior caso.
+Incluindo as operações de divisão e operações booleanas bit a bit \textit{[isso
+está no paper do Fredman e Willard, mas não consegui encontrar o paper original
+do Paul e Simon para saber quais operações boolenas foram usadas exatamente]},
+eles conseguiram um algoritmo em tempo linear. Contudo, ele abusa da suposição
+de custo unitário, gerando operandos durante sua computação que são $n^2$ vezes
+maiores que o maior dos $n$ números a ser ordenado.
+
+Buscando evitar esse abuso, \cite{FrWi93} foram os primeiros a definir de forma
+mais concreta o modelo \textbf{word RAM}. Nessa definição, todos os elementos
+são inteiros de $w$ bits, que denominamos \textit{palavras} (\textit{words}), e
+os algoritmos utilizam apenas de operações entre elas. Aqui, as instruções
+definidas são de adição, subtração, multiplicação, comparação e \textit{AND} e
+todas são executadas em tempo constante. O consumo de espaço é medido em termos
+de \textit{palavras}. 
+
+Além disso, esse modelo supõe que o problema tem um universo finito
+$U=\{0,1,\dots,u-1\}$, com $u=2^w$, de forma que todos os elementos cabem em uma
+\textit{palavra}. Para poder representar de fato o problema nesse modelo, também
+é necessário que $w \geq \lg n$, ou seja, $u \geq n$.
+
+Como disse~\cite{HT98}, infelizmente o \textbf{word RAM} não é um modelo só, mas
+uma família de modelos que diferem no conjunto de instruções disponíveis. Para
+esse trabalho, vamos definir que as operações aritméticas e lógicas
+identificadas na Tabela~\ref{t:word-ram-operations} estão disponíveis e são
+executadas em tempo constante. 
+
+\begin{table}[htbp]
+    \centering
+    \begin{tabular}{|c|c|}
+        \hline
+        \textbf{Símbolo} & \textbf{Significado} \\
+        \hline
+        $+$ & Adição \\ \hline
+        $-$ & Subtração \\ \hline
+        $*$ & Multiplicação \\ \hline
+        $/$ & Divisão \\ \hline
+        $\%$ & Módulo \\ \hline
+        $\&$ & \textit{AND} \\ \hline
+        $\mid$ & \textit{OR} \\ \hline
+        $\oplus$ & \textit{XOR} \\ \hline 
+        $\gg$ & Shift de bits para direita \\ \hline
+        $\ll$ & Shift de bits para esquerda \\ \hline
+        $>$ & Maior que \\ \hline
+        $<$ & Menor que \\ \hline
+        $=$ & Igual \\ \hline
+    \end{tabular}
+    \caption{Tabela definindo as operações disponíveis no nosso modelo de
+    \textbf{word RAM}.\label{t:word-ram-operations}} 
+\end{table}
+
+Também vale notar que esse modelo já se aproxima da arquitetura real dos
+computadores hoje em dia. Atualmente, um sistema comum tem $64$ bits, ou seja,
+suportaria um universo de palavras de $0$ a $2^{64}$.
+
+
+\section{Problema do predecessor}
 
 O problema do predecessor tem como objetivo manter um conjunto $S$ de $n$
 elementos de um universo $U$ sujeito às seguintes operações:
@@ -18,34 +104,13 @@ elementos de um universo $U$ sujeito às seguintes operações:
 \]
 %(Mauricio): x \in U nas consultas também? Imagino que sim.
 
-No nosso caso, estamos interessados no problema dinâmico, que também suporta as
-operações de \textbf{Inserção}, para $x \in U$, e \textbf{Remoção}, para $x \in
-S$.
+No problema do predecessor dinâmico, também são suportadas as operações de
+\textbf{Inserção}, para $x \in U$, e \textbf{Remoção}, para $x \in S$.
 
-Com uma Árvore Binária de Busca Balanceada (ABBB), conseguimos resolver o
-problema com custo $\Theta (\lg n)$ para as operações e ocupando espaço $\Theta
-(n)$.
-%(Mauricio): Aqui você já está supondo Word RAM, visto que está considerando que os ponteiros de uma AABB têm tamanho O(1) cada.
 No modelo clássico baseado em comparações, as únicas operações entre os valores
-dos elementos são de comparação (como $\geq, =, \leq$) e nele uma ABBB é
-assintoticamente ótima.
-
-\subsection{Modelo Word RAM}
-
-Vamos usar o modelo \textbf{word RAM} (Random Access Machine), definido por
-Fredman e Willard em 1983 [conferir veracidade]. Nele, a memória é dividida em
-\textit{palavras} com tamanho de $w$ bits. Assim, todos os elementos são
-inteiros de $w$ bits e definimos um universo finito $U=\{0,1,\dots,u-1\}$, com
-$u=2^w$.  
-
-As operações aritméticas e lógicas entre elementos são executadas em tempo
-constante:
-\[+, -, *, /,\%,<<,>>,\&,|,\geq,=,\leq\]
-
-Além disso, temos que $w\geq \lg n$, caso contrário, nem seria possível
-representar o problema nesse modelo. [desenvolver]
-%(Mauricio): Acho que $n$ deveria ser $u$.
-
-Também vale notar que esse modelo já se aproxima da arquitetura real dos
-computadores hoje em dia. Atualmente, um sistema comum tem $64$ bits, ou seja,
-suportaria um universo de palavras de $0$ a $2^{64}$.
+dos elementos são de comparação (como $\geq, =, \leq$). Nesse modelo, uma Árvore
+Binária de Busca Balanceada (ABBB) consegue resolver o problema dinâmico com
+custo $\Theta (\lg n)$ para as operações e ocupando espaço $\Theta (n)$. Aqui,
+uma ABBB é assintoticamente ótima. Também vale notar que uma ABBB é capaz de
+ordenar $n$ chaves em tempo $O(n \lg n)$, que também é ótimo nesse modelo.
+%(Mauricio): Aqui você já está supondo Word RAM, visto que está considerando que os ponteiros de uma AABB têm tamanho O(1) cada.

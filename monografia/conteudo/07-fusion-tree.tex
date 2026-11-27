@@ -45,12 +45,11 @@ total das operações de apenas $O(\log_b n)$.
 
 \section{Visão inicial das Fusion Trees}
 
-As Fusion Trees foram inventadas por Fredman e Willard em 1990 Elas utilizam de
-diversas técnicas de manipulação de bits e paralelismo em nível de palavra para
-obter uma complexidade de $O(\log_w n)$, onde $w$ é o número de bits em uma
+\cite{FrWi93} inventaram as Fusion Trees. Elas utilizam de diversas técnicas de
+manipulação de bits e paralelismo em nível de palavra para obter uma
+complexidade de $O(\log_w n)$, onde $w$ é o número de bits em uma
 \textit{palavra}, nas operações de busca. Vamos ver a fundo a versão estática
 que conta com espaço linear em $n$ e precisa de um pré-processamento polinomial.
-%~\cite{FrWi93}.
 
 A ideia é construir uma árvore B com ordem $w^{1/5}$, lembrando que $w$ é o
 tamanho da \textit{palavra}. Isso nos dá um nó com $k=O(w^{1/5})$ chaves
